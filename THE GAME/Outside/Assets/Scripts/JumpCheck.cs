@@ -16,7 +16,7 @@ public class JumpCheck : MonoBehaviour {
 	}
 	void OnTriggerExit2D(Collider2D other) {
 		if (other.gameObject.CompareTag ("Platform")) {
-			playercontroller.onPlatform = false;
+			//playercontroller.onPlatform = false;
 		}
 	}
 }

@@ -19,7 +19,7 @@ public class Level : MonoBehaviour {
 		for (int i = 0; i < levelWidth; i++) {
 			for (int j = 0; j < levelHeight; j++) {
 				if (levelDesign [i, j] == 1) {
-					GameObject currentTile = (GameObject)Instantiate (ground, new Vector3 (gridScale * (levelWidth / 2 - j), gridScale * (levelHeight / 2 - i), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+					GameObject currentTile = (GameObject)Instantiate (ground, new Vector3 (gridScale * (j - levelWidth / 2), gridScale * (levelHeight / 2 - i), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 				}
 			}
 		}

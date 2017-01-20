@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour {
 		if (onPlatform) {
 			if (Input.GetKey ("space")) {
 				rb2d.AddForce (new Vector2 (0, jumpPower));
+				onPlatform = false;
 			}
 			if (!Input.GetKey ("a") && !Input.GetKey ("d")) {
 				rb2d.velocity = new Vector2 (0, rb2d.velocity.y);
