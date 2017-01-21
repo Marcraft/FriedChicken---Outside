@@ -20,7 +20,7 @@ public class CameraScript : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		cameraVerticalSize = Camera.main.orthographicSize;
 		cameraHorizontalSize = cameraVerticalSize * Screen.width / Screen.height;
 		if (player.GetComponent<PlayerController> ().facingRight) {
