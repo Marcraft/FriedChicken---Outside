@@ -3,20 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class JumpCheck : MonoBehaviour {
-	private PlayerController playercontroller;
+	public LayerMask ground;
+	private PlayerController playerController;
 
 	void Start() {
-		playercontroller = gameObject.GetComponentInParent<PlayerController> ();
+		playerController = gameObject.GetComponentInParent<PlayerController> ();
 	}
+	void FixedUpdate() {
+		playerController.onPlatform = Physics2D.IsTouchingLayers (GetComponent<Collider2D>(), ground);
 
-	void OnTriggerStay2D(Collider2D other) {
-		if (other.gameObject.CompareTag ("Platform")) {
-			playercontroller.onPlatform = true;
-		}
-	}
-	void OnTriggerExit2D(Collider2D other) {
-		if (other.gameObject.CompareTag ("Platform")) {
-			//playercontroller.onPlatform = false;
-		}
 	}
 }
