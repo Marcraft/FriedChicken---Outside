@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour {
 	public float speed;
 	public float jumpSpeed;
 	public bool onGround;
+	public bool onPlatform;
 	public bool facingRight;
 	public float platformDrop;
 
@@ -42,7 +43,7 @@ public class PlayerController : MonoBehaviour {
 			facingRight = true;
 		}
 		if (Input.GetKeyDown (jumpKey) && onGround && canJump) {
-			if (Input.GetKey (downKey)) {
+			if (Input.GetKey (downKey) && onPlatform) {
 				rb2d.position = new Vector2 (rb2d.position.x, rb2d.position.y - platformDrop);
 			} else {
 				rb2d.velocity = new Vector2 (rb2d.velocity.x, jumpSpeed);
