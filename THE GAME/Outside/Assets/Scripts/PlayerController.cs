@@ -6,8 +6,16 @@ public class PlayerController : MonoBehaviour {
 	public float airControl;
 	public float speed;
 	public float jumpSpeed;
-	public bool onPlatform;
+	public bool onGround;
 	public bool facingRight;
+	public float platformDrop;
+
+	public string leftKey;
+	public string rightKey;
+	public string upKey;
+	public string downKey;
+	public string jumpKey;
+
 
 	private bool canJump;
 	private float jumpTimer;
@@ -24,34 +32,38 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		animator.SetFloat("Speed", Mathf.Abs(rb2d.velocity.x));
-		animator.SetBool("OnPlatform", onPlatform);
-		if (Input.GetKey ("a")) {
+		animator.SetBool("OnGround", onGround);
+		if (Input.GetKey (leftKey)) {
 			transform.localScale = new Vector3 (-1, 1, 1);
 			facingRight = false;
 		}
-		if (Input.GetKey ("d")) {
+		if (Input.GetKey (rightKey)) {
 			transform.localScale = new Vector3 (1, 1, 1);
 			facingRight = true;
 		}
-		if (Input.GetKeyDown ("space") && onPlatform && canJump) {
-			rb2d.velocity = new Vector2 (rb2d.velocity.x, jumpSpeed);
-			jumpTimer = 0.5f;
+		if (Input.GetKeyDown (jumpKey) && onGround && canJump) {
+			if (Input.GetKey (downKey)) {
+				rb2d.position = new Vector2 (rb2d.position.x, rb2d.position.y - platformDrop);
+			} else {
+				rb2d.velocity = new Vector2 (rb2d.velocity.x, jumpSpeed);
+				jumpTimer = 0.5f;
+			}
 			canJump = false;
 		}
-		if (Input.GetKeyUp ("space")) {
+		if (Input.GetKeyUp (jumpKey)) {
 			rb2d.velocity = new Vector2 (rb2d.velocity.x, rb2d.velocity.y * jumpTimer);
 			canJump = true;
 		}
 	}
 	void FixedUpdate() {
-		if (Input.GetKey ("space")) {
+		if (Input.GetKey (jumpKey)) {
 			if (jumpTimer < 1) {
 				jumpTimer += 0.05f;
 			}
 		}
-		if (onPlatform) {
-			if (!Input.GetKey ("a") && !Input.GetKey ("d")) {
-				if (-0.1 < rb2d.velocity.x && rb2d.velocity.x < 0.1) {
+		if (onGround) {
+			if (!Input.GetKey (leftKey) && !Input.GetKey (rightKey)) {
+				if (-0.2 < rb2d.velocity.x && rb2d.velocity.x < 0.2) {
 					rb2d.velocity = new Vector2 (0, rb2d.velocity.y);
 				}
 				else if (rb2d.velocity.x > 0) {
@@ -61,23 +73,23 @@ public class PlayerController : MonoBehaviour {
 					rb2d.AddForce (new Vector2 (groundControl, 0));
 				}
 			}
-			if (Input.GetKey ("a")) {
+			if (Input.GetKey (leftKey)) {
 				if (rb2d.velocity.x > -speed) {
 					rb2d.AddForce (new Vector2 (-groundControl, 0));
 				}
 			}
-			if (Input.GetKey ("d")) {
+			if (Input.GetKey (rightKey)) {
 				if (rb2d.velocity.x < speed) {
 					rb2d.AddForce (new Vector2 (groundControl, 0));
 				}
 			}
 		} else {
-			if (Input.GetKey ("a")) {
+			if (Input.GetKey (leftKey)) {
 				if (rb2d.velocity.x > -speed) {
 					rb2d.AddForce (new Vector2 (-airControl, 0));
 				}
 			}
-			if (Input.GetKey ("d")) {
+			if (Input.GetKey (rightKey)) {
 				if (rb2d.velocity.x < speed) {
 					rb2d.AddForce (new Vector2 (airControl, 0));
 				}
