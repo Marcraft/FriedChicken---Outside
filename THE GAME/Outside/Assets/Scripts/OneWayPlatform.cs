@@ -20,7 +20,6 @@ public class OneWayPlatform : MonoBehaviour {
 			for (int i = 0; i < other.gameObject.GetComponentsInChildren<Collider2D> ().Length; i++) {
 				Physics2D.IgnoreCollision (other.gameObject.GetComponentsInChildren<Collider2D> ()[i], platform);
 			}
-			//platform.enabled = false;
 		}
 	}
 	void OnTriggerExit2D(Collider2D other) {
@@ -31,7 +30,6 @@ public class OneWayPlatform : MonoBehaviour {
 			for (int i = 0; i < other.gameObject.GetComponentsInChildren<Collider2D> ().Length; i++) {
 				Physics2D.IgnoreCollision (other.gameObject.GetComponentsInChildren<Collider2D> ()[i], platform, false);
 			}
-			//platform.enabled = true;
 		}
 	}
 

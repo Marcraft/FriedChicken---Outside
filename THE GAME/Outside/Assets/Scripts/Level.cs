@@ -13,6 +13,7 @@ public class Level : MonoBehaviour {
 
 	public GameObject ground;
 	public GameObject platform;
+	public GameObject ladder;
 	// Use this for initialization
 	void Start () {
 		levelDesign = gameObject.GetComponentInChildren<LevelDesigns> ().getLevelDesign(levelChoice);
@@ -21,21 +22,30 @@ public class Level : MonoBehaviour {
 		levelHeight = levelDesign.GetLength (1);
 		for (int i = 0; i < levelWidth; i++) {
 			for (int j = 0; j < levelHeight; j++) {
-				if (levelDesign [i, j].r == 1) {
+				if (i == 0 || i == levelWidth - 1 || j == 0 || j == levelHeight - 1) {
 					GameObject currentTile = (GameObject)Instantiate (ground, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
-					if (i == 0 || i == levelWidth - 1 || j == 0 || j == levelHeight - 1) {
-						currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground2;
+					currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground2;
+				} else if (levelDesign [i, j].r == 1) {
+					GameObject currentTile = (GameObject)Instantiate (ground, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+					if (levelDesign [i, j + 1].r == 0) {
+						currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground1;
+					} else if (levelDesign [i, j - 1].r == 0) {
+						currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground3;
 					} else {
-						if (levelDesign[i, j + 1].r == 0) {
-							currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground1;
-						} else if (levelDesign[i, j - 1].r == 0) {
-							currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground3;
-						} else {
-							currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground2;
-						}
+						currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground2;
 					}
 				} else if (levelDesign [i, j].b == 1) {
-					GameObject currentTile = (GameObject)Instantiate (platform, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+					if (levelDesign [i, j + 1].b == 1 || levelDesign [i, j - 1].b == 1) {
+						if (levelDesign [i, j + 1].b != 1) {
+							Instantiate (platform, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+							GameObject currentTile = (GameObject)Instantiate (ladder, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+							currentTile.GetComponent<OnLadder> ().topLadder = true;
+						} else {
+							Instantiate (ladder, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+						}
+					} else {
+						Instantiate (platform, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+					}
 				}
 			}
 		}
