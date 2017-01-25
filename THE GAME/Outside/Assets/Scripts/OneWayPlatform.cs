@@ -14,12 +14,24 @@ public class OneWayPlatform : MonoBehaviour {
 
 	void OnTriggerStay2D(Collider2D other) {
 		if(other.gameObject.CompareTag("Player")) {
-			platform.enabled = false;
+			for (int i = 0; i < other.gameObject.GetComponents<Collider2D> ().Length; i++) {
+				Physics2D.IgnoreCollision (other.gameObject.GetComponents<Collider2D> ()[i], platform);
+			}
+			for (int i = 0; i < other.gameObject.GetComponentsInChildren<Collider2D> ().Length; i++) {
+				Physics2D.IgnoreCollision (other.gameObject.GetComponentsInChildren<Collider2D> ()[i], platform);
+			}
+			//platform.enabled = false;
 		}
 	}
 	void OnTriggerExit2D(Collider2D other) {
 		if(other.gameObject.CompareTag("Player")) {
-			platform.enabled = true;
+			for (int i = 0; i < other.gameObject.GetComponents<Collider2D> ().Length; i++) {
+				Physics2D.IgnoreCollision (other.gameObject.GetComponents<Collider2D> ()[i], platform, false);
+			}
+			for (int i = 0; i < other.gameObject.GetComponentsInChildren<Collider2D> ().Length; i++) {
+				Physics2D.IgnoreCollision (other.gameObject.GetComponentsInChildren<Collider2D> ()[i], platform, false);
+			}
+			//platform.enabled = true;
 		}
 	}
 

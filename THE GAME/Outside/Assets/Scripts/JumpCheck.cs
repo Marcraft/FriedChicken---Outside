@@ -9,7 +9,7 @@ public class JumpCheck : MonoBehaviour {
 	void Start() {
 		playerController = gameObject.GetComponentInParent<PlayerController> ();
 	}
-	void FixedUpdate() {
-		playerController.onGround = Physics2D.IsTouchingLayers (GetComponent<Collider2D>(), ground);
+	void Update() {
+		playerController.onGround = Physics2D.IsTouchingLayers (GetComponent<Collider2D>(), ground) && playerController.gameObject.GetComponent<Rigidbody2D> ().velocity.y < 0.1f;
 	}
 }
