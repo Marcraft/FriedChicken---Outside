@@ -11,12 +11,11 @@ public class PlayerController : MonoBehaviour {
 	public float jumpStrength;
 	public float climbingSpeed;
 	public float platformDrop;
-	public bool onGround;
-	public bool onPlatform;
 	public int onLadder;
+	public bool onPlatform;
+	public bool onGround;
 	public bool isClimbing;
 	public bool facingRight;
-	public bool inOOB;
 
 	public string leftKey;
 	public string rightKey;
@@ -25,6 +24,9 @@ public class PlayerController : MonoBehaviour {
 	public string jumpKey;
 	public string oobKey;
 
+
+	private bool inOOB;
+	private bool crouching;
 	private bool canJump;
 	private float jumpTimer;
 	private Animator animator;
@@ -47,6 +49,7 @@ public class PlayerController : MonoBehaviour {
 		animator.SetBool ("OnGround", onGround);
 		animator.SetBool ("inOOB", inOOB);
 		animator.SetBool ("Climbing", isClimbing);
+		animator.SetBool ("Crouching", crouching);
 		if (inOOB) {
 			if (Input.GetKeyDown (oobKey)) {
 				spiritBody.velocity = new Vector2 (0, 0);
@@ -69,21 +72,6 @@ public class PlayerController : MonoBehaviour {
 					rigidBody.velocity = new Vector2 (0, 0);
 					rigidBody.isKinematic = true;
 					isClimbing = true;
-				}
-				if (isClimbing) {
-					if (Input.GetKey (upKey)) {
-						rigidBody.transform.Translate (new Vector2 (0, climbingSpeed));
-					}
-					if (Input.GetKey (downKey)) {
-						rigidBody.transform.Translate (new Vector2 (0, -climbingSpeed));
-					}
-					if (Input.GetKeyDown (jumpKey) && canJump) {
-						rigidBody.velocity = new Vector2 (rigidBody.velocity.x, jumpStrength/2);
-						jumpTimer = 0.5f;
-						canJump = false;
-						rigidBody.isKinematic = false;
-						isClimbing = false;
-					}
 				}
 				if (onGround && isClimbing) {
 					isClimbing = false;
@@ -112,6 +100,11 @@ public class PlayerController : MonoBehaviour {
 					facingRight = true;
 				}
 			}
+			if (Input.GetKey (downKey)) {
+				crouching = true;
+			} else {
+				crouching = false;
+			}
 			if (Input.GetKeyDown (jumpKey) && onGround && canJump) {
 				if (Input.GetKey (downKey) && onPlatform) {
 					rigidBody.position = new Vector2 (rigidBody.position.x, rigidBody.position.y - platformDrop);
@@ -131,6 +124,23 @@ public class PlayerController : MonoBehaviour {
 		if (Input.GetKey (jumpKey) && jumpTimer < 1) {
 			jumpTimer += 0.05f;
 		}
+		if (onLadder > 0) {
+			if (isClimbing) {
+				if (Input.GetKey (upKey)) {
+					rigidBody.transform.Translate (new Vector2 (0, climbingSpeed));
+				}
+				if (Input.GetKey (downKey)) {
+					rigidBody.transform.Translate (new Vector2 (0, -climbingSpeed));
+				}
+				if (Input.GetKeyDown (jumpKey) && canJump) {
+					rigidBody.velocity = new Vector2 (rigidBody.velocity.x, jumpStrength/2);
+					jumpTimer = 0.5f;
+					canJump = false;
+					rigidBody.isKinematic = false;
+					isClimbing = false;
+				}
+			}
+		}
 		if (inOOB) {
 			//spirit
 			if (Input.GetKey (upKey) && spiritBody.velocity.y < speed) spiritBody.AddForce (new Vector2 (0, spiritControl));
@@ -146,7 +156,7 @@ public class PlayerController : MonoBehaviour {
 		}
 		else {
 			if (onGround) {
-				if ((!Input.GetKey (leftKey) && !Input.GetKey (rightKey))) {
+				if (((!Input.GetKey (leftKey) && !Input.GetKey (rightKey)) || crouching)) {
 					if (-0.2 < rigidBody.velocity.x && rigidBody.velocity.x < 0.2) {
 						rigidBody.velocity = new Vector2 (0, rigidBody.velocity.y);
 					} else if (rigidBody.velocity.x > 0) {
@@ -155,8 +165,10 @@ public class PlayerController : MonoBehaviour {
 						rigidBody.AddForce (new Vector2 (groundControl, 0));
 					}
 				}
-				if (Input.GetKey (leftKey) && rigidBody.velocity.x > -speed) rigidBody.AddForce (new Vector2 (-groundControl, 0));
-				if (Input.GetKey (rightKey) && rigidBody.velocity.x < speed) rigidBody.AddForce (new Vector2 (groundControl, 0));
+				if (!crouching) {
+					if (Input.GetKey (leftKey) && rigidBody.velocity.x > -speed) rigidBody.AddForce (new Vector2 (-groundControl, 0));
+					if (Input.GetKey (rightKey) && rigidBody.velocity.x < speed) rigidBody.AddForce (new Vector2 (groundControl, 0));
+				}
 			} else {
 				if (Input.GetKey (leftKey) && rigidBody.velocity.x > -speed) rigidBody.AddForce (new Vector2 (-airControl, 0));
 				if (Input.GetKey (rightKey) && rigidBody.velocity.x < speed) rigidBody.AddForce (new Vector2 (airControl, 0));

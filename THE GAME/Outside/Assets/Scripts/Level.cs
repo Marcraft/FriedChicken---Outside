@@ -38,9 +38,11 @@ public class Level : MonoBehaviour {
 					if (levelDesign [i, j + 1].b == 1 || levelDesign [i, j - 1].b == 1) {
 						if (levelDesign [i, j + 1].b != 1) {
 							Instantiate (platform, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
-							GameObject currentTile = (GameObject)Instantiate (ladder, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
-							currentTile.GetComponent<OnLadder> ().topLadder = true;
-						} else {
+							Instantiate (ladder, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+						}
+						else if(levelDesign [i, j - 1].r == 0 && levelDesign [i, j - 1].g == 0 && levelDesign [i, j - 1].b == 0) {
+							Instantiate (platform, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+						}else {
 							Instantiate (ladder, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 						}
 					} else {

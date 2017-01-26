@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class OnLadder : MonoBehaviour {
-	public bool topLadder;
 	// Use this for initialization
 	void Start () {
 	}
