@@ -15,6 +15,7 @@ public class Level : MonoBehaviour {
 	public GameObject platform;
 	public GameObject ladder;
 	public GameObject teleport;
+
 	// Use this for initialization
 	void Start () {
 		levelDesign = gameObject.GetComponentInChildren<LevelDesigns> ().getLevelDesign(levelChoice);

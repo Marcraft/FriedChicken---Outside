@@ -14,8 +14,8 @@ public class OnLadder : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other) {
 		if(other.gameObject.CompareTag("Player")) {
 			PlayerController player = other.gameObject.GetComponent<PlayerController> ();
-			player.onLadder += 1;
-			if (player.isClimbing) {
+			player.canClimb += 1;
+			if (player.state == PlayerController.State.climbing) {
 				player.transform.position = new Vector2 (transform.position.x, player.transform.position.y);
 			}
 		}
@@ -23,7 +23,7 @@ public class OnLadder : MonoBehaviour {
 	void OnTriggerExit2D(Collider2D other) {
 		if (other.gameObject.CompareTag ("Player")) {
 			PlayerController player = other.gameObject.GetComponent<PlayerController> ();
-			player.onLadder -= 1;
+			player.canClimb -= 1;
 		}
 	}
 }
