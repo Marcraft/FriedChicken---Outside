@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class LevelDesigns : MonoBehaviour {
 	public Texture2D testLevelImg;
-	public Color[,] getLevelDesign(int level) {
+	public Color32[,] getLevelDesign(int level) {
 		if (level == 0) {
-			Color [,] levelArray = new Color[testLevelImg.width,testLevelImg.height];
+			Color32 [,] levelArray = new Color32[testLevelImg.width,testLevelImg.height];
 			for (int i = 0; i < testLevelImg.width; i++) {
 				for (int j = 0; j < testLevelImg.height; j++) {
-					Color currentPixelColor = testLevelImg.GetPixel (i, j);
+					Color32 currentPixelColor = testLevelImg.GetPixel (i, j);
 					levelArray [i, j] = currentPixelColor;
 				}
 			}

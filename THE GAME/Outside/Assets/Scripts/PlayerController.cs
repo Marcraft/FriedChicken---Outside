@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour
+{
 	public GameObject spirit;
 
 	public float groundControl;
@@ -34,19 +35,24 @@ public class PlayerController : MonoBehaviour {
 	private Animator animator;
 	private Rigidbody2D rigidBody;
 	private Rigidbody2D spiritBody;
+	public bool changeScene;
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
 		rigidBody = gameObject.GetComponent<Rigidbody2D> ();
 		spiritBody = spirit.GetComponent<Rigidbody2D> ();
 		animator = gameObject.GetComponent<Animator> ();
 		canJump = true;
 		inOOB = false;
 		isClimbing = false;
+		onPlatform = false;
+		changeScene = false;
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 		animator.SetFloat ("Speed", Mathf.Abs (rigidBody.velocity.x));
 		animator.SetBool ("OnGround", onGround);
 		animator.SetBool ("inOOB", inOOB);
@@ -63,56 +69,72 @@ public class PlayerController : MonoBehaviour {
 				inOOB = false;
 			}
 			if (Input.GetKey (leftKey)) {
-				if(facingRight) spirit.transform.localScale = new Vector3 (-1, 1, 1);
-				else spirit.transform.localScale = new Vector3 (1, 1, 1);
+				if (facingRight)
+					spirit.transform.localScale = new Vector3 (-1, 1, 1);
+				else
+					spirit.transform.localScale = new Vector3 (1, 1, 1);
 			}
 			if (Input.GetKey (rightKey)) {
-				if(facingRight) spirit.transform.localScale = new Vector3 (1, 1, 1);
-				else spirit.transform.localScale = new Vector3 (-1, 1, 1);
-			}
-		} else {
-			//ON LADDER
-			if (onLadder > 0) {
-				if (!isClimbing && (Input.GetKey (upKey))) {
-					rigidBody.velocity = new Vector2 (0, 0);
-					rigidBody.isKinematic = true;
-					isClimbing = true;
-				}
-				if (onGround && isClimbing) {
-					isClimbing = false;
-					rigidBody.isKinematic = false;
-
-				}
-				
-			} 
-			//CAN DO ANYTHING STATE
-			else {
-				if (isClimbing) {
-					isClimbing = false;
-					rigidBody.isKinematic = false;
-				}
-				if (Input.GetKeyDown (oobKey)) {
-					spiritBody.velocity = new Vector2 (0, 0);
-					spirit.transform.localPosition = new Vector2 (0, 0);
+				if (facingRight)
 					spirit.transform.localScale = new Vector3 (1, 1, 1);
-					spirit.GetComponent<SpriteRenderer> ().enabled = true;
-					inOOB = true;
-				}
-				if (Input.GetKey (leftKey)) {
-					transform.localScale = new Vector3 (-1, 1, 1);
-					facingRight = false;
-				}
-				if (Input.GetKey (rightKey)) {
-					transform.localScale = new Vector3 (1, 1, 1);
-					facingRight = true;
+				else
+					spirit.transform.localScale = new Vector3 (-1, 1, 1);
+			}
+		} else if (onLadder > 0) {
+			if (!isClimbing && (Input.GetKey (upKey))) {
+				rigidBody.velocity = new Vector2 (0, 0);
+				rigidBody.isKinematic = true;
+				isClimbing = true;
+			}
+			if (onGround && isClimbing) {
+				isClimbing = false;
+				rigidBody.isKinematic = false;
+
+			}
+			if (isClimbing) {
+				if (Input.GetKeyDown (jumpKey) && canJump) {
+					rigidBody.velocity = new Vector2 (rigidBody.velocity.x, jumpStrength / 2);
+					jumpTimer = 0.5f;
+					canJump = false;
+					rigidBody.isKinematic = false;
+					isClimbing = false;
 				}
 			}
+				
+		} else {
+			if (isClimbing) {
+				isClimbing = false;
+				rigidBody.isKinematic = false;
+			}
+			if (Input.GetKeyDown (oobKey) && !shooting) {
+				spiritBody.velocity = new Vector2 (0, 0);
+				spirit.transform.localPosition = new Vector2 (0, 0);
+				spirit.transform.localScale = new Vector3 (1, 1, 1);
+				spirit.GetComponent<SpriteRenderer> ().enabled = true;
+				inOOB = true;
+			}
+			if (Input.GetKey (leftKey)) {
+				transform.localScale = new Vector3 (-1, 1, 1);
+				facingRight = false;
+			}
+			if (Input.GetKey (rightKey)) {
+				transform.localScale = new Vector3 (1, 1, 1);
+				facingRight = true;
+			}
+			if (Input.GetKeyDown (rangedKey)) {
+				shooting = true;
+			}
+			if (Input.GetKeyUp (rangedKey)) {
+				shooting = false;
+			}
+		}
+		if (onGround) {
 			if (Input.GetKey (downKey)) {
 				crouching = true;
 			} else {
 				crouching = false;
 			}
-			if (Input.GetKeyDown (jumpKey) && onGround && canJump) {
+			if (Input.GetKeyDown (jumpKey) && canJump) {
 				if (Input.GetKey (downKey) && onPlatform) {
 					rigidBody.position = new Vector2 (rigidBody.position.x, rigidBody.position.y - platformDrop);
 				} else {
@@ -121,20 +143,17 @@ public class PlayerController : MonoBehaviour {
 				}
 				canJump = false;
 			}
-			if (Input.GetKeyUp (jumpKey)) {
-				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y * jumpTimer);
-				canJump = true;
-			}
-			if(Input.GetKeyDown(rangedKey)) {
-				shooting = true;
-			}
-			if (Input.GetKeyUp (rangedKey)) {
-				shooting = false;
-			}
-				
 		}
+		if (Input.GetKeyUp (jumpKey)) {
+			rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y * jumpTimer);
+			canJump = true;
+		}
+			
+
 	}
-	void FixedUpdate () {
+
+	void FixedUpdate ()
+	{
 		if (Input.GetKey (jumpKey) && jumpTimer < 1) {
 			jumpTimer += 0.05f;
 		}
@@ -146,29 +165,28 @@ public class PlayerController : MonoBehaviour {
 				if (Input.GetKey (downKey)) {
 					rigidBody.transform.Translate (new Vector2 (0, -climbingSpeed));
 				}
-				if (Input.GetKeyDown (jumpKey) && canJump) {
-					rigidBody.velocity = new Vector2 (rigidBody.velocity.x, jumpStrength/2);
-					jumpTimer = 0.5f;
-					canJump = false;
-					rigidBody.isKinematic = false;
-					isClimbing = false;
-				}
 			}
 		}
 		if (inOOB) {
 			//spirit
-			if (Input.GetKey (upKey) && spiritBody.velocity.y < speed) spiritBody.AddForce (new Vector2 (0, spiritControl));
-			if (Input.GetKey (downKey) && spiritBody.velocity.y > -speed) spiritBody.AddForce (new Vector2 (0, -spiritControl));
-			if (Input.GetKey (leftKey) && spiritBody.velocity.x > -speed) spiritBody.AddForce (new Vector2 (-spiritControl, 0));
-			if (Input.GetKey (rightKey) && spiritBody.velocity.x < speed) spiritBody.AddForce (new Vector2 (spiritControl, 0));
+			if (Input.GetKey (upKey) && spiritBody.velocity.y < speed)
+				spiritBody.AddForce (new Vector2 (0, spiritControl));
+			if (Input.GetKey (downKey) && spiritBody.velocity.y > -speed)
+				spiritBody.AddForce (new Vector2 (0, -spiritControl));
+			if (Input.GetKey (leftKey) && spiritBody.velocity.x > -speed)
+				spiritBody.AddForce (new Vector2 (-spiritControl, 0));
+			if (Input.GetKey (rightKey) && spiritBody.velocity.x < speed)
+				spiritBody.AddForce (new Vector2 (spiritControl, 0));
 			//human
 			if (onGround) {
-				if (-0.2 < rigidBody.velocity.x && rigidBody.velocity.x < 0.2) rigidBody.velocity = new Vector2 (0, rigidBody.velocity.y);
-				else if (rigidBody.velocity.x > 0) rigidBody.AddForce (new Vector2 (-groundControl, 0));
-				else if (rigidBody.velocity.x < 0) rigidBody.AddForce (new Vector2 (groundControl, 0));
+				if (-0.2 < rigidBody.velocity.x && rigidBody.velocity.x < 0.2)
+					rigidBody.velocity = new Vector2 (0, rigidBody.velocity.y);
+				else if (rigidBody.velocity.x > 0)
+					rigidBody.AddForce (new Vector2 (-groundControl, 0));
+				else if (rigidBody.velocity.x < 0)
+					rigidBody.AddForce (new Vector2 (groundControl, 0));
 			}
-		}
-		else {
+		} else {
 			if (onGround) {
 				if (((!Input.GetKey (leftKey) && !Input.GetKey (rightKey)) || crouching || shooting)) {
 					if (-0.2 < rigidBody.velocity.x && rigidBody.velocity.x < 0.2) {
@@ -179,20 +197,28 @@ public class PlayerController : MonoBehaviour {
 						rigidBody.AddForce (new Vector2 (groundControl, 0));
 					}
 				}
-				if (!crouching && ! shooting) {
-					if (Input.GetKey (leftKey) && rigidBody.velocity.x > -speed) rigidBody.AddForce (new Vector2 (-groundControl, 0));
-					if (Input.GetKey (rightKey) && rigidBody.velocity.x < speed) rigidBody.AddForce (new Vector2 (groundControl, 0));
+				if (!crouching && !shooting) {
+					if (Input.GetKey (leftKey) && rigidBody.velocity.x > -speed)
+						rigidBody.AddForce (new Vector2 (-groundControl, 0));
+					if (Input.GetKey (rightKey) && rigidBody.velocity.x < speed)
+						rigidBody.AddForce (new Vector2 (groundControl, 0));
 				}
 			} else {
-				if (Input.GetKey (leftKey) && rigidBody.velocity.x > -speed) rigidBody.AddForce (new Vector2 (-airControl, 0));
-				if (Input.GetKey (rightKey) && rigidBody.velocity.x < speed) rigidBody.AddForce (new Vector2 (airControl, 0));
+				if (Input.GetKey (leftKey) && rigidBody.velocity.x > -speed)
+					rigidBody.AddForce (new Vector2 (-airControl, 0));
+				if (Input.GetKey (rightKey) && rigidBody.velocity.x < speed)
+					rigidBody.AddForce (new Vector2 (airControl, 0));
 			}
 		}
 	}
-	public void setKinematic() {
+
+	public void setKinematic ()
+	{
 		rigidBody.isKinematic = true;
 	}
-	public void setDynamic() {
+
+	public void setDynamic ()
+	{
 		rigidBody.isKinematic = false;
 	}
 }
