@@ -23,11 +23,13 @@ public class PlayerController : MonoBehaviour {
 	public string downKey;
 	public string jumpKey;
 	public string oobKey;
+	public string rangedKey;
 
 
 	private bool inOOB;
 	private bool crouching;
 	private bool canJump;
+	private bool shooting;
 	private float jumpTimer;
 	private Animator animator;
 	private Rigidbody2D rigidBody;
@@ -50,6 +52,8 @@ public class PlayerController : MonoBehaviour {
 		animator.SetBool ("inOOB", inOOB);
 		animator.SetBool ("Climbing", isClimbing);
 		animator.SetBool ("Crouching", crouching);
+		animator.SetBool ("Shooting", shooting);
+		//IN OUT OF BODY
 		if (inOOB) {
 			if (Input.GetKeyDown (oobKey)) {
 				spiritBody.velocity = new Vector2 (0, 0);
@@ -67,6 +71,7 @@ public class PlayerController : MonoBehaviour {
 				else spirit.transform.localScale = new Vector3 (-1, 1, 1);
 			}
 		} else {
+			//ON LADDER
 			if (onLadder > 0) {
 				if (!isClimbing && (Input.GetKey (upKey))) {
 					rigidBody.velocity = new Vector2 (0, 0);
@@ -79,7 +84,9 @@ public class PlayerController : MonoBehaviour {
 
 				}
 				
-			} else {
+			} 
+			//CAN DO ANYTHING STATE
+			else {
 				if (isClimbing) {
 					isClimbing = false;
 					rigidBody.isKinematic = false;
@@ -118,6 +125,13 @@ public class PlayerController : MonoBehaviour {
 				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y * jumpTimer);
 				canJump = true;
 			}
+			if(Input.GetKeyDown(rangedKey)) {
+				shooting = true;
+			}
+			if (Input.GetKeyUp (rangedKey)) {
+				shooting = false;
+			}
+				
 		}
 	}
 	void FixedUpdate () {
@@ -156,7 +170,7 @@ public class PlayerController : MonoBehaviour {
 		}
 		else {
 			if (onGround) {
-				if (((!Input.GetKey (leftKey) && !Input.GetKey (rightKey)) || crouching)) {
+				if (((!Input.GetKey (leftKey) && !Input.GetKey (rightKey)) || crouching || shooting)) {
 					if (-0.2 < rigidBody.velocity.x && rigidBody.velocity.x < 0.2) {
 						rigidBody.velocity = new Vector2 (0, rigidBody.velocity.y);
 					} else if (rigidBody.velocity.x > 0) {
@@ -165,7 +179,7 @@ public class PlayerController : MonoBehaviour {
 						rigidBody.AddForce (new Vector2 (groundControl, 0));
 					}
 				}
-				if (!crouching) {
+				if (!crouching && ! shooting) {
 					if (Input.GetKey (leftKey) && rigidBody.velocity.x > -speed) rigidBody.AddForce (new Vector2 (-groundControl, 0));
 					if (Input.GetKey (rightKey) && rigidBody.velocity.x < speed) rigidBody.AddForce (new Vector2 (groundControl, 0));
 				}
