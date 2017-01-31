@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CameraScript : MonoBehaviour {
 	public GameObject player;
+	public GameObject spirit;
 	public GameObject level;
 	private Vector2 target;
 	private Vector2 difference;
@@ -23,7 +24,10 @@ public class CameraScript : MonoBehaviour {
 	void FixedUpdate () {
 		cameraVerticalSize = Camera.main.orthographicSize;
 		cameraHorizontalSize = cameraVerticalSize * Screen.width / Screen.height;
-		if (player.GetComponent<PlayerController> ().facingRight) {
+		if (player.GetComponent<PlayerController>().state == PlayerController.State.outofbody) {
+			target = new Vector2 ((player.transform.position.x + spirit.transform.position.x)/2, (player.transform.position.y + spirit.transform.position.y)/2);
+		}
+		else if (player.GetComponent<PlayerController> ().facingRight) {
 			target = new Vector2 (player.transform.position.x + 1, player.transform.position.y);
 		} else {
 			target = new Vector2 (player.transform.position.x - 1, player.transform.position.y);

@@ -15,6 +15,10 @@ public class Level : MonoBehaviour {
 	public GameObject platform;
 	public GameObject ladder;
 	public GameObject teleport;
+	public GameObject slab;
+	public GameObject boulder;
+	public GameObject spikes;
+	public GameObject weakground;
 
 	// Use this for initialization
 	void Start () {
@@ -38,11 +42,16 @@ public class Level : MonoBehaviour {
 				} 
 				//INSIDE
 				//ground
-				else if (compare(levelDesign [i, j], 0,0,0)) {
-					GameObject currentTile = (GameObject)Instantiate (ground, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
-					if (!compare(levelDesign [i, j + 1], 0,0,0)) {
+				else if (compare(levelDesign [i, j], 0,0,0) || compare(levelDesign [i, j], 0,128,128)) {
+					GameObject currentTile;
+					if (compare (levelDesign [i, j], 0, 0, 0)) {
+						currentTile = (GameObject)Instantiate (ground, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+					} else {
+						currentTile = (GameObject)Instantiate (weakground, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+					}
+					if (!compare(levelDesign [i, j+1], 0,0,0) && !compare(levelDesign [i, j+1], 0,128,128)) {
 						currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground1;
-					} else if (!compare(levelDesign [i, j - 1], 0,0,0)) {
+					} else if (!compare(levelDesign [i, j-1], 0,0,0) && !compare(levelDesign [i, j-1], 0,128,128)) {
 						currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground3;
 					} else {
 						currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground2;
@@ -64,9 +73,20 @@ public class Level : MonoBehaviour {
 						Instantiate (platform, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 					}
 				} 
+				else if (compare (levelDesign [i, j], 255, 0, 0)) {
+					GameObject currentTile = (GameObject)Instantiate (spikes, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+				}
 				//teleports
 				else if (compare (levelDesign [i, j], 0, 255, 255)) {
 					GameObject currentTile = (GameObject)Instantiate (teleport, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+				}
+				//slab
+				else if (compare (levelDesign [i, j], 0, 128, 0)) {
+					GameObject currentTile = (GameObject)Instantiate (slab, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+				}
+				//boulder
+				else if (compare (levelDesign [i, j], 128, 128, 0)) {
+					GameObject currentTile = (GameObject)Instantiate (boulder, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 				}
 			}
 		}

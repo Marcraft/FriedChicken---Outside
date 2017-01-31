@@ -15,6 +15,9 @@ public class OnLadder : MonoBehaviour {
 		if(other.gameObject.CompareTag("Player")) {
 			PlayerController player = other.gameObject.GetComponent<PlayerController> ();
 			player.canClimb += 1;
+
+
+
 			if (player.state == PlayerController.State.climbing) {
 				player.transform.position = new Vector2 (transform.position.x, player.transform.position.y);
 			}

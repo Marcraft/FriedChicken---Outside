@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerController : MonoBehaviour
 {
 	public GameObject spirit;
+	public GameObject darkness;
 
 	public float groundControl;
 	public float airControl;
@@ -105,6 +106,7 @@ public class PlayerController : MonoBehaviour
 					spirit.transform.localPosition = new Vector2 (0, 0);
 					spirit.transform.localScale = new Vector3 (1, 1, 1);
 					spirit.GetComponent<SpriteRenderer> ().enabled = true;
+					darkness.GetComponent<Darkness> ().OOB = true;
 					state = State.outofbody;
 				}
 			}
@@ -153,6 +155,7 @@ public class PlayerController : MonoBehaviour
 					spirit.transform.localPosition = new Vector2 (0, 0);
 					spirit.transform.localScale = new Vector3 (1, 1, 1);
 					spirit.GetComponent<SpriteRenderer> ().enabled = true;
+					darkness.GetComponent<Darkness> ().OOB = true;
 					state = State.outofbody;
 				}
 			}
@@ -218,6 +221,7 @@ public class PlayerController : MonoBehaviour
 				spirit.transform.localPosition = new Vector2 (0, 0);
 				spirit.transform.localScale = new Vector3 (1, 1, 1);
 				spirit.GetComponent<SpriteRenderer> ().enabled = false;
+				darkness.GetComponent<Darkness> ().OOB = false;
 				state = State.standing;
 			}
 			if (Input.GetKey (leftKey)) {
