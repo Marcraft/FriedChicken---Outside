@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 	public GameObject spirit;
 	public GameObject darkness;
 	public GameObject arrow;
+	public GameObject globalVariables;
 
 	public float groundControl;
 	public float airControl;

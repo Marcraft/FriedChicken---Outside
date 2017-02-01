@@ -15,6 +15,7 @@ public class Level : MonoBehaviour {
 	public GameObject platform;
 	public GameObject ladder;
 	public GameObject teleport;
+	public GameObject spawnpoint;
 	public GameObject slab;
 	public GameObject boulder;
 	public GameObject spikes;
@@ -79,6 +80,10 @@ public class Level : MonoBehaviour {
 				//teleports
 				else if (compare (levelDesign [i, j], 0, 255, 255)) {
 					Instantiate (teleport, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+				}
+				//spawnpoint
+				else if (compare (levelDesign [i, j], 128, 128, 255)) {
+					Instantiate (spawnpoint, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 				}
 				//slab
 				else if (compare (levelDesign [i, j], 0, 128, 0)) {

@@ -1,16 +1,16 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PlayerController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\SceneChange.cs">
     <Files>
-      <File FileName="Assets\Scripts\Level.cs" Line="35" Column="44" />
-      <File FileName="Assets\Scripts\LevelDesigns.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\PlayerController.cs" Line="335" Column="32" />
-      <File FileName="Assets\Scripts\FPS.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Boulder.cs" Line="16" Column="54" />
-      <File FileName="Assets\Scripts\CameraScript.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\PlayerController.cs" Line="7" Column="28" />
+      <File FileName="Assets\Scripts\SceneChange.cs" Line="66" Column="34" />
+      <File FileName="Assets\Scripts\GlobalVariables.cs" Line="32" Column="22" />
+      <File FileName="Assets\Scripts\Teleport.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Level.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\LevelDesigns.cs" Line="5" Column="44" />
+      <File FileName="Assets\Scripts\CameraScript.cs" Line="47" Column="116" />
       <File FileName="Assets\Scripts\Darkness.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Spiritouch.cs" Line="36" Column="43" />
-      <File FileName="Assets\Arrow.cs" Line="40" Column="29" />
+      <File FileName="Assets\Scripts\Spiritouch.cs" Line="31" Column="75" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
