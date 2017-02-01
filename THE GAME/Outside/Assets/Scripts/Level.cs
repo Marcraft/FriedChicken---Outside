@@ -37,7 +37,7 @@ public class Level : MonoBehaviour {
 					}
 					//teleport
 					else if (compare (levelDesign [i, j], 0, 255, 255)) {
-						GameObject currentTile = (GameObject)Instantiate (teleport, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+						Instantiate (teleport, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 					}
 				} 
 				//INSIDE
@@ -74,19 +74,19 @@ public class Level : MonoBehaviour {
 					}
 				} 
 				else if (compare (levelDesign [i, j], 255, 0, 0)) {
-					GameObject currentTile = (GameObject)Instantiate (spikes, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+					Instantiate (spikes, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 				}
 				//teleports
 				else if (compare (levelDesign [i, j], 0, 255, 255)) {
-					GameObject currentTile = (GameObject)Instantiate (teleport, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+					Instantiate (teleport, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 				}
 				//slab
 				else if (compare (levelDesign [i, j], 0, 128, 0)) {
-					GameObject currentTile = (GameObject)Instantiate (slab, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+					Instantiate (slab, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 				}
 				//boulder
 				else if (compare (levelDesign [i, j], 128, 128, 0)) {
-					GameObject currentTile = (GameObject)Instantiate (boulder, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+					Instantiate (boulder, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 				}
 			}
 		}

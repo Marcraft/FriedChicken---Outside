@@ -11,7 +11,7 @@ public class Boulder : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () {
+	void Update () {
 		 float rotateSpeed =  -rigidBody.velocity.x * rotateFactor;
 		transform.Rotate(0,0,rotateSpeed * Time.deltaTime);
 	}

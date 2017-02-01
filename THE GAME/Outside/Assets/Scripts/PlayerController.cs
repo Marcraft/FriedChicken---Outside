@@ -5,6 +5,7 @@ public class PlayerController : MonoBehaviour
 {
 	public GameObject spirit;
 	public GameObject darkness;
+	public GameObject arrow;
 
 	public float groundControl;
 	public float airControl;
@@ -16,7 +17,6 @@ public class PlayerController : MonoBehaviour
 	public int canClimb;
 	public bool onPlatform;
 	public bool onGround;
-	public bool isClimbing;
 	public bool facingRight;
 
 	public string leftKey;
@@ -26,9 +26,14 @@ public class PlayerController : MonoBehaviour
 	public string jumpKey;
 	public string oobKey;
 	public string rangedKey;
+	public string meleeKey;
 
+	public float combo1;
+	public float combo2;
+	public float combo3;
 
-	private bool inOOB;
+	private float comboTimer;
+	private bool nextCombo;
 	private float jumpTimer;
 	private Animator animator;
 	private Rigidbody2D rigidBody;
@@ -55,6 +60,15 @@ public class PlayerController : MonoBehaviour
 	}
 
 	public CombatState combatState = CombatState.idle;
+
+	public enum MeleeCombo
+	{
+		zero,
+		one,
+		two,
+		three
+	}
+	public MeleeCombo meleeCombo = MeleeCombo.zero;
 	// Use this for initialization
 	void Start ()
 	{
@@ -69,13 +83,10 @@ public class PlayerController : MonoBehaviour
 		animator.SetFloat ("Speed", Mathf.Abs (rigidBody.velocity.x));
 		animator.SetInteger ("State", (int)state);
 		animator.SetInteger ("CombatState", (int)combatState);
+		animator.SetInteger ("Combo", (int)meleeCombo);
+		//STATE STANDING
 		if (state == State.standing) {
 			if (!onGround) {
-				state = State.jumping;
-			}
-			if (Input.GetKeyDown (jumpKey)) {
-				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, jumpStrength);
-				jumpTimer = 0.5f;
 				state = State.jumping;
 			}
 			if (Input.GetKey (leftKey)) {
@@ -88,6 +99,11 @@ public class PlayerController : MonoBehaviour
 			}
 
 			if (combatState == CombatState.idle) {
+				if (Input.GetKeyDown (jumpKey)) {
+					rigidBody.velocity = new Vector2 (rigidBody.velocity.x, jumpStrength);
+					jumpTimer = 0.5f;
+					state = State.jumping;
+				}
 				if (Input.GetKey (upKey)) {
 					if (canClimb > 0) {
 						rigidBody.velocity = new Vector2 (0, 0);
@@ -101,20 +117,90 @@ public class PlayerController : MonoBehaviour
 				if (Input.GetKeyDown (rangedKey)) {
 					combatState = CombatState.ranged;
 				}
+				if (Input.GetKeyDown (meleeKey)) {
+					combatState = CombatState.melee;
+				}
 				if (Input.GetKeyDown (oobKey)) {
 					spiritBody.velocity = new Vector2 (0, 0);
 					spirit.transform.localPosition = new Vector2 (0, 0);
 					spirit.transform.localScale = new Vector3 (1, 1, 1);
 					spirit.GetComponent<SpriteRenderer> ().enabled = true;
+					spirit.GetComponent <BoxCollider2D>().enabled = true;
 					darkness.GetComponent<Darkness> ().OOB = true;
 					state = State.outofbody;
 				}
 			}
 			if (combatState == CombatState.melee) {
+				if (meleeCombo == MeleeCombo.zero) {
+					comboTimer = combo1;
+					meleeCombo = MeleeCombo.one;
+					if(facingRight) 
+						rigidBody.velocity = new Vector2 (speed*combo1, 0);
+					else 
+						rigidBody.velocity = new Vector2 (-speed*combo1, 0);
+				}
+				else if (meleeCombo == MeleeCombo.one) {
+					if (comboTimer <= 0) {
+						if (nextCombo) {
+							comboTimer = combo2;
+							meleeCombo = MeleeCombo.two;
+							nextCombo = false;
+							if(facingRight) 
+								rigidBody.velocity = new Vector2 (speed*combo2*1.5f, 0);
+							else 
+								rigidBody.velocity = new Vector2 (-speed*combo2*1.5f, 0);
+						} else {
+							meleeCombo = MeleeCombo.zero;
+							combatState = CombatState.idle;
+						}
 
+					}
+					if (Input.GetKeyDown (meleeKey)) {
+						nextCombo = true;
+					}
+
+				}
+				else if (meleeCombo == MeleeCombo.two) {
+					if (comboTimer <= 0) {
+						if (nextCombo) {
+							comboTimer = combo3;
+							meleeCombo = MeleeCombo.three;
+							nextCombo = false;
+							if(facingRight) 
+								rigidBody.velocity = new Vector2 (speed*combo3*2, 0);
+							else 
+								rigidBody.velocity = new Vector2 (-speed*combo3*2, 0);
+						} else {
+							meleeCombo = MeleeCombo.zero;
+							combatState = CombatState.idle;
+						}
+					}
+					if (Input.GetKeyDown (meleeKey)) {
+						nextCombo = true;
+					}
+
+				}
+				else if (meleeCombo == MeleeCombo.three) {
+					if (comboTimer <= 0) {
+						meleeCombo = MeleeCombo.zero;
+						combatState = CombatState.idle;
+					}
+
+				}
 			}
 			if (combatState == CombatState.ranged) {
+				if (Input.GetKeyDown (jumpKey)) {
+					rigidBody.velocity = new Vector2 (rigidBody.velocity.x, jumpStrength);
+					jumpTimer = 0.5f;
+					state = State.jumping;
+				}
 				if (Input.GetKeyUp (rangedKey)) {
+					GameObject currentArrow = (GameObject)Instantiate (arrow,new Vector3(transform.position.x, transform.position.y-0.02f, transform.position.z),Quaternion.Euler (new Vector3 (0, 0, 0)));
+					if (facingRight) {
+						currentArrow.GetComponent<Arrow> ().goingRight = true;
+					} else {
+						currentArrow.GetComponent<Arrow> ().goingRight = false;
+					}
 					combatState = CombatState.idle;
 				}
 				if (Input.GetKey (downKey)) {
@@ -126,7 +212,9 @@ public class PlayerController : MonoBehaviour
 
 			}
 
-		} else if (state == State.crouching) {
+		}
+		//STATE CROUCHING
+		else if (state == State.crouching) {
 			if (Input.GetKeyUp (downKey)) {
 				state = State.standing;
 			}
@@ -150,17 +238,28 @@ public class PlayerController : MonoBehaviour
 				if (Input.GetKeyDown (rangedKey)) {
 					combatState = CombatState.ranged;
 				}
+				if (Input.GetKeyDown (meleeKey)) {
+					state = State.standing;
+					combatState = CombatState.melee;
+				}
 				if (Input.GetKeyDown (oobKey)) {
 					spiritBody.velocity = new Vector2 (0, 0);
 					spirit.transform.localPosition = new Vector2 (0, 0);
 					spirit.transform.localScale = new Vector3 (1, 1, 1);
 					spirit.GetComponent<SpriteRenderer> ().enabled = true;
+					spirit.GetComponent <BoxCollider2D>().enabled = true;
 					darkness.GetComponent<Darkness> ().OOB = true;
 					state = State.outofbody;
 				}
 			}
 			if (combatState == CombatState.ranged) {
 				if (Input.GetKeyUp (rangedKey)) {
+					GameObject currentArrow = (GameObject)Instantiate (arrow,new Vector3(transform.position.x, transform.position.y-0.38f, transform.position.z),Quaternion.Euler (new Vector3 (0, 0, 0)));
+					if (facingRight) {
+						currentArrow.GetComponent<Arrow> ().goingRight = true;
+					} else {
+						currentArrow.GetComponent<Arrow> ().goingRight = false;
+					}
 					combatState = CombatState.idle;
 				}
 				if (Input.GetKey (downKey)) {
@@ -168,7 +267,9 @@ public class PlayerController : MonoBehaviour
 				}
 
 			}
-		} else if (state == State.jumping) {
+		} 
+		//STATE JUMPING
+		else if (state == State.jumping) {
 			if (onGround) {
 				state = State.standing;
 			}
@@ -194,17 +295,30 @@ public class PlayerController : MonoBehaviour
 				if (Input.GetKeyDown (rangedKey)) {
 					combatState = CombatState.ranged;
 				}
+				if (Input.GetKeyDown (meleeKey)) {
+					combatState = CombatState.melee;
+				}
 			}
 			if (combatState == CombatState.melee) {
+				//NOT IMPLEMENTED
+				combatState = CombatState.idle;
 
 			}
 			if (combatState == CombatState.ranged) {
 				if (Input.GetKeyUp (rangedKey)) {
+					GameObject currentArrow = (GameObject)Instantiate (arrow,new Vector3(transform.position.x, transform.position.y-0.02f, transform.position.z),Quaternion.Euler (new Vector3 (0, 0, 0)));
+					if (facingRight) {
+						currentArrow.GetComponent<Arrow> ().goingRight = true;
+					} else {
+						currentArrow.GetComponent<Arrow> ().goingRight = false;
+					}
 					combatState = CombatState.idle;
 				}
 			}
 
-		} else if (state == State.climbing) {
+		} 
+		//STATE CLIMBING
+		else if (state == State.climbing) {
 			if (Input.GetKeyDown (jumpKey)) {
 				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, jumpStrength / 2);
 				jumpTimer = 0.5f;
@@ -215,12 +329,15 @@ public class PlayerController : MonoBehaviour
 				rigidBody.isKinematic = false;
 				state = State.standing;
 			}
-		} else if (state == State.outofbody) {
+		} 
+		//STATE OUT OF BODY
+		else if (state == State.outofbody) {
 			if (Input.GetKeyDown (oobKey)) {
 				spiritBody.velocity = new Vector2 (0, 0);
 				spirit.transform.localPosition = new Vector2 (0, 0);
 				spirit.transform.localScale = new Vector3 (1, 1, 1);
 				spirit.GetComponent<SpriteRenderer> ().enabled = false;
+				spirit.GetComponent <BoxCollider2D>().enabled = false;
 				darkness.GetComponent<Darkness> ().OOB = false;
 				state = State.standing;
 			}
@@ -246,14 +363,14 @@ public class PlayerController : MonoBehaviour
 	void FixedUpdate ()
 	{
 		if (Input.GetKey (jumpKey) && jumpTimer < 1) {
-			jumpTimer += 0.05f;
+			jumpTimer += Time.deltaTime;
 		}
 		if (state == State.climbing) {
 			if (Input.GetKey (upKey)) {
-				rigidBody.transform.Translate (new Vector2 (0, climbingSpeed));
+				rigidBody.transform.Translate (new Vector2 (0, climbingSpeed * Time.deltaTime));
 			}
 			if (Input.GetKey (downKey)) {
-				rigidBody.transform.Translate (new Vector2 (0, -climbingSpeed));
+				rigidBody.transform.Translate (new Vector2 (0, -climbingSpeed * Time.deltaTime));
 			}
 		}
 		if (state == State.crouching) {
@@ -303,6 +420,9 @@ public class PlayerController : MonoBehaviour
 				rigidBody.AddForce (new Vector2 (-airControl, 0));
 			if (Input.GetKey (rightKey) && rigidBody.velocity.x < speed)
 				rigidBody.AddForce (new Vector2 (airControl, 0));
+		}
+		if (comboTimer > 0) {
+			comboTimer -= Time.deltaTime;
 		}
 	}
 }

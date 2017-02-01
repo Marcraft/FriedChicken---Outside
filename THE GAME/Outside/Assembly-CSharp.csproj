@@ -46,7 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\OOB.cs" />
+     <Compile Include="Assets\Arrow.cs" />
      <Compile Include="Assets\Scripts\Background.cs" />
      <Compile Include="Assets\Scripts\Boulder.cs" />
      <Compile Include="Assets\Scripts\CameraScript.cs" />
@@ -56,15 +56,17 @@
      <Compile Include="Assets\Scripts\JumpCheck.cs" />
      <Compile Include="Assets\Scripts\Level.cs" />
      <Compile Include="Assets\Scripts\LevelDesigns.cs" />
+     <Compile Include="Assets\Scripts\OOB.cs" />
      <Compile Include="Assets\Scripts\OnLadder.cs" />
      <Compile Include="Assets\Scripts\OnPlatform.cs" />
      <Compile Include="Assets\Scripts\OneWayPlatform.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\SceneChange.cs" />
      <Compile Include="Assets\Scripts\Slab.cs" />
+     <Compile Include="Assets\Scripts\SpiritBoulder.cs" />
+     <Compile Include="Assets\Scripts\Spiritouch.cs" />
      <Compile Include="Assets\Scripts\SpriteControl.cs" />
      <Compile Include="Assets\Scripts\Teleport.cs" />
-     <Compile Include="Assets\Spiritouch.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
