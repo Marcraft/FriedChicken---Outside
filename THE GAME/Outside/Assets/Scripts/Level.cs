@@ -21,6 +21,9 @@ public class Level : MonoBehaviour {
 	public GameObject spikes;
 	public GameObject weakground;
 
+	public GameObject raccoon;
+	public GameObject wolf;
+
 	// Use this for initialization
 	void Start () {
 		levelDesign = gameObject.GetComponentInChildren<LevelDesigns> ().getLevelDesign(levelChoice);
@@ -92,6 +95,14 @@ public class Level : MonoBehaviour {
 				//boulder
 				else if (compare (levelDesign [i, j], 128, 128, 0)) {
 					Instantiate (boulder, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+				}
+				//raccoon
+				else if (compare (levelDesign [i, j], 255, 128, 0)) {
+					Instantiate (raccoon, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+				}
+				//wolf
+				else if (compare (levelDesign [i, j], 255, 128, 128)) {
+					Instantiate (wolf, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 				}
 			}
 		}

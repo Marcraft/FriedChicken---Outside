@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class SceneChange : MonoBehaviour {
 	public GameObject player;
 	public GameObject camera;
+	public GameObject canvas;
 	public string levelName;
 	public bool LeftExit;
 	public bool RightExit;
@@ -15,34 +16,41 @@ public class SceneChange : MonoBehaviour {
 	private bool FoundSpawn;
 	private bool changeMap;
 	private bool SpawnHere;
+	private bool fadeIn;
 	private GameObject[] GlobalVariables;
 	private GameObject[] SpawnPoints;
 	private Bounds bounds;
+	private Spawn lastExit;
 
 	// Use this for initialization
 	void Start () {
 		GlobalVariables = GameObject.FindGameObjectsWithTag("Global");
-		Spawn lastExit = GlobalVariables[0].GetComponent<GlobalVariables>().getSpawn();
+		lastExit = GlobalVariables[0].GetComponent<GlobalVariables>().getSpawn();
 		bounds = GetComponent<BoxCollider2D>().bounds;
 		opacity = 1;
 		if (lastExit == Spawn.left && LeftExit) {
 			SpawnHere = true;
+			fadeIn = true;
 		}
 		if (lastExit == Spawn.right && RightExit) {
 			SpawnHere = true;
+			fadeIn = true;
 		}
 		if (lastExit == Spawn.up && UpExit) {
 			SpawnHere = true;
+			fadeIn = true;
 		}
 		if (lastExit == Spawn.down && DownExit) {
 			SpawnHere = true;
+			fadeIn = true;
 		}
+		canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
 
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-		GetComponent<SpriteRenderer> ().color = new Color (1f, 1f, 1f, opacity);
+		//canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
 		SpawnPoints = GameObject.FindGameObjectsWithTag("Spawn");
 		if (!FoundSpawn) {
 			if (SpawnHere) {
@@ -57,13 +65,15 @@ public class SceneChange : MonoBehaviour {
 			}
 		}
 		if (changeMap) {
+			canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
 			opacity += Time.deltaTime * 3;
 			if (opacity >= 1) {
 				SceneManager.LoadScene (levelName);
 			}
 		} else {
-			if (opacity >= 0) {
+			if (opacity >= 0 && fadeIn) {
 				opacity -= Time.deltaTime * 3;
+				canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
 			}
 		}
 	}
@@ -85,7 +95,6 @@ public class SceneChange : MonoBehaviour {
 					GlobalVariables[0].GetComponent<GlobalVariables>().setSpawn(Spawn.up);
 				}
 				changeMap = true;
-				Debug.Log (changeMap);
 				//SceneManager.LoadScene (levelName);
 			}
 		}

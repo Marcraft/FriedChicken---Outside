@@ -61,12 +61,15 @@
      <Compile Include="Assets\Scripts\OnPlatform.cs" />
      <Compile Include="Assets\Scripts\OneWayPlatform.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
+     <Compile Include="Assets\Scripts\Raccoon.cs" />
+     <Compile Include="Assets\Scripts\RaccoonProjectile.cs" />
      <Compile Include="Assets\Scripts\SceneChange.cs" />
      <Compile Include="Assets\Scripts\Slab.cs" />
      <Compile Include="Assets\Scripts\SpiritBoulder.cs" />
      <Compile Include="Assets\Scripts\Spiritouch.cs" />
      <Compile Include="Assets\Scripts\SpriteControl.cs" />
      <Compile Include="Assets\Scripts\Teleport.cs" />
+     <Compile Include="Assets\Scripts\Wolf.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
