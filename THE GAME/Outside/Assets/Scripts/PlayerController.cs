@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
 	public GameObject arrow;
 	public GameObject globalVariables;
 
+	public float health;
+
 	public float groundControl;
 	public float airControl;
 	public float spiritControl;
@@ -90,16 +92,15 @@ public class PlayerController : MonoBehaviour
 			if (!onGround) {
 				state = State.jumping;
 			}
-			if (Input.GetKey (leftKey)) {
-				transform.localScale = new Vector3 (-1, 1, 1);
-				facingRight = false;
-			}
-			if (Input.GetKey (rightKey)) {
-				transform.localScale = new Vector3 (1, 1, 1);
-				facingRight = true;
-			}
-
 			if (combatState == CombatState.idle) {
+				if (Input.GetKey (leftKey)) {
+					transform.localScale = new Vector3 (-1, 1, 1);
+					facingRight = false;
+				}
+				if (Input.GetKey (rightKey)) {
+					transform.localScale = new Vector3 (1, 1, 1);
+					facingRight = true;
+				}
 				if (Input.GetKeyDown (jumpKey)) {
 					rigidBody.velocity = new Vector2 (rigidBody.velocity.x, jumpStrength);
 					jumpTimer = 0.5f;
@@ -119,6 +120,7 @@ public class PlayerController : MonoBehaviour
 					combatState = CombatState.ranged;
 				}
 				if (Input.GetKeyDown (meleeKey)) {
+					meleeCombo = MeleeCombo.zero;
 					combatState = CombatState.melee;
 				}
 				if (Input.GetKeyDown (oobKey)) {
@@ -143,6 +145,14 @@ public class PlayerController : MonoBehaviour
 				else if (meleeCombo == MeleeCombo.one) {
 					if (comboTimer <= 0) {
 						if (nextCombo) {
+							if (Input.GetKey (leftKey)) {
+								transform.localScale = new Vector3 (-1, 1, 1);
+								facingRight = false;
+							}
+							if (Input.GetKey (rightKey)) {
+								transform.localScale = new Vector3 (1, 1, 1);
+								facingRight = true;
+							}
 							comboTimer = combo2;
 							meleeCombo = MeleeCombo.two;
 							nextCombo = false;
@@ -164,6 +174,14 @@ public class PlayerController : MonoBehaviour
 				else if (meleeCombo == MeleeCombo.two) {
 					if (comboTimer <= 0) {
 						if (nextCombo) {
+							if (Input.GetKey (leftKey)) {
+								transform.localScale = new Vector3 (-1, 1, 1);
+								facingRight = false;
+							}
+							if (Input.GetKey (rightKey)) {
+								transform.localScale = new Vector3 (1, 1, 1);
+								facingRight = true;
+							}
 							comboTimer = combo3;
 							meleeCombo = MeleeCombo.three;
 							nextCombo = false;
@@ -274,18 +292,18 @@ public class PlayerController : MonoBehaviour
 			if (onGround) {
 				state = State.standing;
 			}
-			if (Input.GetKey (leftKey)) {
-				transform.localScale = new Vector3 (-1, 1, 1);
-				facingRight = false;
-			}
-			if (Input.GetKey (rightKey)) {
-				transform.localScale = new Vector3 (1, 1, 1);
-				facingRight = true;
-			}
 			if (Input.GetKeyUp (jumpKey)) {
 				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y * jumpTimer);
 			}
 			if (combatState == CombatState.idle) {
+				if (Input.GetKey (leftKey)) {
+					transform.localScale = new Vector3 (-1, 1, 1);
+					facingRight = false;
+				}
+				if (Input.GetKey (rightKey)) {
+					transform.localScale = new Vector3 (1, 1, 1);
+					facingRight = true;
+				}
 				if (canClimb > 0) {
 					if ((Input.GetKey (upKey))) {
 						rigidBody.velocity = new Vector2 (0, 0);
@@ -401,7 +419,7 @@ public class PlayerController : MonoBehaviour
 				rigidBody.AddForce (new Vector2 (groundControl, 0));
 		} 
 		if (state == State.standing) {
-			if ((!Input.GetKey (leftKey) && !Input.GetKey (rightKey)) || combatState != CombatState.idle) {
+			if ((Input.GetKey (leftKey) == Input.GetKey (rightKey)) || combatState != CombatState.idle) {
 				if (-0.2 < rigidBody.velocity.x && rigidBody.velocity.x < 0.2) {
 					rigidBody.velocity = new Vector2 (0, rigidBody.velocity.y);
 				} else if (rigidBody.velocity.x > 0) {

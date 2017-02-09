@@ -1,102 +1,136 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class SceneChange : MonoBehaviour {
+public class SceneChange : MonoBehaviour
+{
 	public GameObject player;
-	public GameObject camera;
+	public GameObject mainCamera;
 	public GameObject canvas;
-	public string levelName;
-	public bool LeftExit;
-	public bool RightExit;
-	public bool UpExit;
-	public bool DownExit;
+	public GameObject level;
+
+	public TriggerScript leftTrigger;
+	public TriggerScript rightTrigger;
+	public TriggerScript upTrigger;
+	public TriggerScript downTrigger;
+
+	public int currentLevel;
+
 	private float opacity;
 	private bool FoundSpawn;
 	private bool changeMap;
-	private bool SpawnHere;
-	private bool fadeIn;
-	private GameObject[] GlobalVariables;
-	private GameObject[] SpawnPoints;
-	private Bounds bounds;
+
+
+	public enum Spawn
+	{
+		left,
+		right,
+		up,
+		down
+	}
+
+	public Spawn spawn = Spawn.left;
 	private Spawn lastExit;
 
 	// Use this for initialization
-	void Start () {
-		GlobalVariables = GameObject.FindGameObjectsWithTag("Global");
-		lastExit = GlobalVariables[0].GetComponent<GlobalVariables>().getSpawn();
-		bounds = GetComponent<BoxCollider2D>().bounds;
-		opacity = 1;
-		if (lastExit == Spawn.left && LeftExit) {
-			SpawnHere = true;
-			fadeIn = true;
-		}
-		if (lastExit == Spawn.right && RightExit) {
-			SpawnHere = true;
-			fadeIn = true;
-		}
-		if (lastExit == Spawn.up && UpExit) {
-			SpawnHere = true;
-			fadeIn = true;
-		}
-		if (lastExit == Spawn.down && DownExit) {
-			SpawnHere = true;
-			fadeIn = true;
-		}
+	void Start ()
+	{
+		changeMap = false;
+		FoundSpawn = false;
 		canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
 
 	}
 
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 		//canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
-		SpawnPoints = GameObject.FindGameObjectsWithTag("Spawn");
+
 		if (!FoundSpawn) {
-			if (SpawnHere) {
-				for (int i = 0; i < SpawnPoints.Length; i++) {
-					Vector2 spawnposition = SpawnPoints [i].transform.position;
-					if (bounds.Contains (spawnposition)) {
-						camera.transform.position = new Vector3 (spawnposition.x, spawnposition.y, -10);
-						player.transform.position = spawnposition;
-						FoundSpawn = true;
-					}
-				}
+			if (spawn == Spawn.left) {
+				mainCamera.transform.position = new Vector3 (leftTrigger.spawnPlayer ().x, leftTrigger.spawnPlayer ().y, -10);
+				player.transform.position = leftTrigger.spawnPlayer ();
 			}
+			if (spawn == Spawn.right) {
+				mainCamera.transform.position = new Vector3 (rightTrigger.spawnPlayer ().x, rightTrigger.spawnPlayer ().y, -10);
+				player.transform.position = rightTrigger.spawnPlayer ();
+			}
+			if (spawn == Spawn.up) {
+				mainCamera.transform.position = new Vector3 (upTrigger.spawnPlayer ().x, upTrigger.spawnPlayer ().y, -10);
+				player.transform.position = upTrigger.spawnPlayer ();
+			}
+			if (spawn == Spawn.down) {
+				mainCamera.transform.position = new Vector3 (downTrigger.spawnPlayer ().x, downTrigger.spawnPlayer ().y, -10);
+				player.transform.position = downTrigger.spawnPlayer ();
+			}
+			FoundSpawn = true;
 		}
+		////////////////
+		if (leftTrigger.changeScene) {
+			spawn = Spawn.right;
+			leftTrigger.changeScene = false;
+			changeMap = true;
+		} else if (rightTrigger.changeScene) {
+			spawn = Spawn.left;
+			rightTrigger.changeScene = false;
+			changeMap = true;
+		} else if (upTrigger.changeScene) {
+			spawn = Spawn.down;
+			upTrigger.changeScene = false;
+			changeMap = true;
+		} else if (downTrigger.changeScene) {
+			spawn = Spawn.up;
+			downTrigger.changeScene = false;
+			changeMap = true;
+		}
+		////////////////
 		if (changeMap) {
 			canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
-			opacity += Time.deltaTime * 3;
-			if (opacity >= 1) {
-				SceneManager.LoadScene (levelName);
+			opacity += Time.deltaTime * 5;
+			if (opacity >= 1.5) {
+				//----CHANGE LEVEL-----//
+				changeMap = false;
+				FoundSpawn = false;
+				player.transform.position = new Vector2();
+				player.GetComponent<PlayerController> ().changeScene = false;
+				level.GetComponent<Level> ().levelChoice = chooseNextLevel ();
+				level.GetComponent<Level> ().resetLevel ();
+				Start ();
+
+				//--------------------//
+
 			}
 		} else {
-			if (opacity >= 0 && fadeIn) {
-				opacity -= Time.deltaTime * 3;
+			if (opacity >= 0) {
+				opacity -= Time.deltaTime * 5;
 				canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
 			}
 		}
 	}
-		
-	void OnTriggerStay2D(Collider2D other) {
-		if (other.gameObject.CompareTag ("Player")) {
-			PlayerController player = other.gameObject.GetComponent<PlayerController> ();
-			if (player.changeScene) {
-				if (LeftExit) {
-					GlobalVariables[0].GetComponent<GlobalVariables>().setSpawn(Spawn.right);
-				}
-				if (RightExit) {
-					GlobalVariables[0].GetComponent<GlobalVariables>().setSpawn(Spawn.left);
-				}
-				if (UpExit) {
-					GlobalVariables[0].GetComponent<GlobalVariables>().setSpawn(Spawn.down);
-				}
-				if (DownExit) {
-					GlobalVariables[0].GetComponent<GlobalVariables>().setSpawn(Spawn.up);
-				}
-				changeMap = true;
-				//SceneManager.LoadScene (levelName);
-			}
+
+	public int chooseNextLevel ()
+	{
+		int nextLevel = currentLevel;
+		if (spawn == Spawn.left) {
+			if (currentLevel == 1)
+				nextLevel = 2;
+			if (currentLevel == 2)
+				nextLevel = 3;
+			if (currentLevel == 3)
+				nextLevel = 1;
+		} else if (spawn == Spawn.right) {
+			if (currentLevel == 1)
+				nextLevel = 0;
+			if (currentLevel == 2)
+				nextLevel = 1;
+			if (currentLevel == 3)
+				nextLevel = 2;
+		} else if (spawn == Spawn.up) {
+			
+		} else if (spawn == Spawn.down) {
+			
 		}
+		currentLevel = nextLevel;
+		return nextLevel;
 	}
 }

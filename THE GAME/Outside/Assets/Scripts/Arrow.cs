@@ -27,7 +27,7 @@ public class Arrow : MonoBehaviour {
 		if (opacity <= 0) {
 			Destroy (gameObject);
 		}
-		if (hitEnemy) {
+		if (hitEnemy && !hitOther) {
 			Destroy (gameObject);
 		}
 		if (hitOther) {
@@ -49,6 +49,10 @@ public class Arrow : MonoBehaviour {
 		if(other.CompareTag("Ground") || other.CompareTag("Platform") || other.CompareTag("Boulder")){
 			hitOther = true;
 			rigidBody.velocity = new Vector2 (0, 0);
+		}
+		if(other.CompareTag("Enemy")){
+			hitEnemy = true;
+			other.GetComponent<Enemy> ().health--;
 		}
 
 	}

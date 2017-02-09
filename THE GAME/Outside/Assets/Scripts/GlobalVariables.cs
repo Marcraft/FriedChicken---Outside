@@ -12,9 +12,6 @@ public enum Spawn {
 public class GlobalVariables : MonoBehaviour {
 	
 	Spawn spawn = Spawn.left;
-	void Awake() {
-		DontDestroyOnLoad (this.gameObject);
-	}
 	// Use this for initialization
 	void Start () {
 		

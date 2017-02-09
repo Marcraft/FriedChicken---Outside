@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Level : MonoBehaviour {
+public class Level : MonoBehaviour
+{
 	private LevelDesigns levelDesigns;
 	public Color32[,] levelDesign;
 	private int levelWidth;
@@ -25,8 +26,9 @@ public class Level : MonoBehaviour {
 	public GameObject wolf;
 
 	// Use this for initialization
-	void Start () {
-		levelDesign = gameObject.GetComponentInChildren<LevelDesigns> ().getLevelDesign(levelChoice);
+	void Start ()
+	{
+		levelDesign = gameObject.GetComponentInChildren<LevelDesigns> ().getLevelDesign (levelChoice);
 
 		levelWidth = levelDesign.GetLength (0);
 		levelHeight = levelDesign.GetLength (1);
@@ -46,38 +48,36 @@ public class Level : MonoBehaviour {
 				} 
 				//INSIDE
 				//ground
-				else if (compare(levelDesign [i, j], 0,0,0) || compare(levelDesign [i, j], 0,128,128)) {
+				else if (compare (levelDesign [i, j], 0, 0, 0) || compare (levelDesign [i, j], 0, 128, 128)) {
 					GameObject currentTile;
 					if (compare (levelDesign [i, j], 0, 0, 0)) {
 						currentTile = (GameObject)Instantiate (ground, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 					} else {
 						currentTile = (GameObject)Instantiate (weakground, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 					}
-					if (!compare(levelDesign [i, j+1], 0,0,0) && !compare(levelDesign [i, j+1], 0,128,128)) {
+					if (!compare (levelDesign [i, j + 1], 0, 0, 0) && !compare (levelDesign [i, j + 1], 0, 128, 128)) {
 						currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground1;
-					} else if (!compare(levelDesign [i, j-1], 0,0,0) && !compare(levelDesign [i, j-1], 0,128,128)) {
+					} else if (!compare (levelDesign [i, j - 1], 0, 0, 0) && !compare (levelDesign [i, j - 1], 0, 128, 128)) {
 						currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground3;
 					} else {
 						currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground2;
 					}
 				} 
 				//platforms and ladders
-				else if (compare(levelDesign [i, j], 128,128,128)) {
-					if (compare(levelDesign [i, j+1], 128,128,128) || compare(levelDesign [i, j-1], 128,128,128)) {
-						if (!compare(levelDesign [i, j+1], 128,128,128)) {
+				else if (compare (levelDesign [i, j], 128, 128, 128)) {
+					if (compare (levelDesign [i, j + 1], 128, 128, 128) || compare (levelDesign [i, j - 1], 128, 128, 128)) {
+						if (!compare (levelDesign [i, j + 1], 128, 128, 128)) {
 							Instantiate (platform, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 							Instantiate (ladder, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
-						}
-						else if(!compare(levelDesign [i, j+1], 128,128,128)) {
+						} else if (!compare (levelDesign [i, j + 1], 128, 128, 128)) {
 							Instantiate (platform, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
-						}else {
+						} else {
 							Instantiate (ladder, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 						}
 					} else {
 						Instantiate (platform, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 					}
-				} 
-				else if (compare (levelDesign [i, j], 255, 0, 0)) {
+				} else if (compare (levelDesign [i, j], 255, 0, 0)) {
 					Instantiate (spikes, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 				}
 				//teleports
@@ -109,22 +109,39 @@ public class Level : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 		
 	}
 
-	public int getLevelWidth() {
+	public int getLevelWidth ()
+	{
 		return levelWidth;
 	}
 
-	public int getLevelHeight() {
+	public int getLevelHeight ()
+	{
 		return levelHeight;
 	}
 
-	public bool compare(Color32 color, int r, int g, int b) {
-		if(color.r == r && color.g == g && color.b == b) {
+	public bool compare (Color32 color, int r, int g, int b)
+	{
+		if (color.r == r && color.g == g && color.b == b) {
 			return true;
 		}
 		return false;
+	}
+
+	public void resetLevel ()
+	{
+		GameObject[] GameObjects = (FindObjectsOfType<GameObject> () as GameObject[]);
+		for (int i = 0; i < GameObjects.Length; i++) {
+			if (GameObjects [i].CompareTag ("Arrow") || GameObjects [i].CompareTag ("Boulder") || GameObjects [i].CompareTag ("Enemy")
+			    || GameObjects [i].CompareTag ("Slab") || GameObjects [i].CompareTag ("Ground") || GameObjects [i].CompareTag ("tile")
+			    || GameObjects [i].CompareTag ("Platform") || GameObjects [i].CompareTag ("Spawn") || GameObjects [i].CompareTag ("Boulder")) {
+				Destroy (GameObjects [i]);
+			}
+		}
+		Start ();
 	}
 }
