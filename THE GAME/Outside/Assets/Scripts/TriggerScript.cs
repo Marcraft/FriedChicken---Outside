@@ -7,6 +7,7 @@ public class TriggerScript : MonoBehaviour {
 	public bool changeScene;
 	private Bounds bounds;
 	private GameObject[] SpawnPoints;
+	private Vector2 spawnPoint;
 
 	// Use this for initialization
 	void Start () {
@@ -18,6 +19,12 @@ public class TriggerScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		SpawnPoints = GameObject.FindGameObjectsWithTag ("Spawn");
+		for (int i = 0; i < SpawnPoints.Length; i++) {
+			Vector2 spawnposition = SpawnPoints [i].transform.position;
+			if (bounds.Contains (spawnposition)) {
+				spawnPoint = spawnposition;
+			}
+		}
 	}
 	void OnTriggerStay2D (Collider2D other)
 	{
@@ -36,12 +43,7 @@ public class TriggerScript : MonoBehaviour {
 		}
 	}
 	public Vector3 spawnPlayer() {
-		for (int i = 0; i < SpawnPoints.Length; i++) {
-			Vector2 spawnposition = SpawnPoints [i].transform.position;
-			if (bounds.Contains (spawnposition)) {
-				return spawnposition;
-			}
-		}
-		return new Vector3 ();
+		
+		return spawnPoint;
 	}
 }

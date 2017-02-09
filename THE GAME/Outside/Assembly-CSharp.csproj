@@ -55,6 +55,7 @@
      <Compile Include="Assets\Scripts\Enemy.cs" />
      <Compile Include="Assets\Scripts\FPS.cs" />
      <Compile Include="Assets\Scripts\GlobalVariables.cs" />
+     <Compile Include="Assets\Scripts\Grass.cs" />
      <Compile Include="Assets\Scripts\JumpCheck.cs" />
      <Compile Include="Assets\Scripts\Level.cs" />
      <Compile Include="Assets\Scripts\LevelDesigns.cs" />

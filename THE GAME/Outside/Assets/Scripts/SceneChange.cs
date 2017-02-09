@@ -44,9 +44,7 @@ public class SceneChange : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		//canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
-
-		if (!FoundSpawn) {
+		if (!FoundSpawn && level.GetComponent<Level>().levelReady) {
 			if (spawn == Spawn.left) {
 				mainCamera.transform.position = new Vector3 (leftTrigger.spawnPlayer ().x, leftTrigger.spawnPlayer ().y, -10);
 				player.transform.position = leftTrigger.spawnPlayer ();

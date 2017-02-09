@@ -24,10 +24,12 @@ public class Level : MonoBehaviour
 
 	public GameObject raccoon;
 	public GameObject wolf;
+	public bool levelReady;
 
 	// Use this for initialization
 	void Start ()
 	{
+		levelReady = false;
 		levelDesign = gameObject.GetComponentInChildren<LevelDesigns> ().getLevelDesign (levelChoice);
 
 		levelWidth = levelDesign.GetLength (0);
@@ -111,7 +113,7 @@ public class Level : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		
+		levelReady = true;
 	}
 
 	public int getLevelWidth ()
