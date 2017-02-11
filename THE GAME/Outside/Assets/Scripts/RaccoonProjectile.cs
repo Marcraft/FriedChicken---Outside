@@ -48,7 +48,7 @@ public class RaccoonProjectile : MonoBehaviour {
 			hitPlayer = true;
 			other.GetComponent <PlayerController>().health--;
 		}
-		if(other.CompareTag("Arrow")){
+		if(other.CompareTag("Arrow") || other.CompareTag("Attack")){
 			hitPlayer = true;
 		}
 

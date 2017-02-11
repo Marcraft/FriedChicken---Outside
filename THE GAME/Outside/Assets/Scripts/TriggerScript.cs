@@ -19,12 +19,12 @@ public class TriggerScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		SpawnPoints = GameObject.FindGameObjectsWithTag ("Spawn");
-		for (int i = 0; i < SpawnPoints.Length; i++) {
+		/*for (int i = 0; i < SpawnPoints.Length; i++) {
 			Vector2 spawnposition = SpawnPoints [i].transform.position;
 			if (bounds.Contains (spawnposition)) {
 				spawnPoint = spawnposition;
 			}
-		}
+		}*/
 	}
 	void OnTriggerStay2D (Collider2D other)
 	{
@@ -34,6 +34,10 @@ public class TriggerScript : MonoBehaviour {
 			if (player.changeScene) {
 				changeScene = true;
 			}
+		}
+		if (other.gameObject.CompareTag ("Spawn")) {
+			spawnPoint = other.transform.position;
+			Destroy (other.gameObject);
 		}
 	}
 	void OnTriggerExit2D (Collider2D other)

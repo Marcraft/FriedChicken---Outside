@@ -68,6 +68,7 @@
      <Compile Include="Assets\Scripts\SceneChange.cs" />
      <Compile Include="Assets\Scripts\Slab.cs" />
      <Compile Include="Assets\Scripts\SpiritBoulder.cs" />
+     <Compile Include="Assets\Scripts\SpiritPush.cs" />
      <Compile Include="Assets\Scripts\Spiritouch.cs" />
      <Compile Include="Assets\Scripts\SpriteControl.cs" />
      <Compile Include="Assets\Scripts\Teleport.cs" />

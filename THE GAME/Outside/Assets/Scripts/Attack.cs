@@ -24,6 +24,5 @@ public class Attack : MonoBehaviour {
 			else
 				other.GetComponent<Rigidbody2D> ().velocity = new Vector2 (-knockback, 0);
 		}
-
 	}
 }

@@ -54,6 +54,9 @@ public class Arrow : MonoBehaviour {
 			hitEnemy = true;
 			other.GetComponent<Enemy> ().health--;
 		}
+		if(other.CompareTag("RaccoonProjectile")){
+			hitEnemy = true;
+		}
 
 	}
 }

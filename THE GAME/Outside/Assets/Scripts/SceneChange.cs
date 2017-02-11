@@ -32,6 +32,10 @@ public class SceneChange : MonoBehaviour
 	public Spawn spawn = Spawn.left;
 	private Spawn lastExit;
 
+	void Awake() {
+		level.GetComponent<Level> ().levelChoice = currentLevel;
+	}
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -48,6 +52,7 @@ public class SceneChange : MonoBehaviour
 			if (spawn == Spawn.left) {
 				mainCamera.transform.position = new Vector3 (leftTrigger.spawnPlayer ().x, leftTrigger.spawnPlayer ().y, -10);
 				player.transform.position = leftTrigger.spawnPlayer ();
+
 			}
 			if (spawn == Spawn.right) {
 				mainCamera.transform.position = new Vector3 (rightTrigger.spawnPlayer ().x, rightTrigger.spawnPlayer ().y, -10);
@@ -90,11 +95,12 @@ public class SceneChange : MonoBehaviour
 				changeMap = false;
 				FoundSpawn = false;
 				player.transform.position = new Vector2();
+
 				player.GetComponent<PlayerController> ().changeScene = false;
 				level.GetComponent<Level> ().levelChoice = chooseNextLevel ();
 				level.GetComponent<Level> ().resetLevel ();
 				Start ();
-
+				player.GetComponent<PlayerController> ().canClimb = 0;
 				//--------------------//
 
 			}
@@ -110,23 +116,41 @@ public class SceneChange : MonoBehaviour
 	{
 		int nextLevel = currentLevel;
 		if (spawn == Spawn.left) {
-			if (currentLevel == 1)
-				nextLevel = 2;
-			if (currentLevel == 2)
-				nextLevel = 3;
-			if (currentLevel == 3)
-				nextLevel = 1;
+			if (currentLevel == 101)
+				nextLevel = 102;
+			if (currentLevel == 102)
+				nextLevel = 103;
+			if (currentLevel == 103)
+				nextLevel = 104;
+			if (currentLevel == 104)
+				nextLevel = 105;
+			if (currentLevel == 105)
+				nextLevel = 106;
 		} else if (spawn == Spawn.right) {
-			if (currentLevel == 1)
+			if (currentLevel == 101)
 				nextLevel = 0;
-			if (currentLevel == 2)
-				nextLevel = 1;
-			if (currentLevel == 3)
-				nextLevel = 2;
+			if (currentLevel == 102)
+				nextLevel = 101;
+			if (currentLevel == 103)
+				nextLevel = 102;
+			if (currentLevel == 104)
+				nextLevel = 103;
+			if (currentLevel == 105)
+				nextLevel = 104;
+			if (currentLevel == 106)
+				nextLevel = 105;
+
 		} else if (spawn == Spawn.up) {
+			if (currentLevel == 106)
+				nextLevel = 108;
+			if (currentLevel == 107)
+				nextLevel = 106;
 			
 		} else if (spawn == Spawn.down) {
-			
+			if (currentLevel == 106)
+				nextLevel = 107;
+			if (currentLevel == 108)
+				nextLevel = 106;
 		}
 		currentLevel = nextLevel;
 		return nextLevel;

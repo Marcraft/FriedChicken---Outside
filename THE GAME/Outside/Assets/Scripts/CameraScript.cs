@@ -34,14 +34,14 @@ public class CameraScript : MonoBehaviour {
 		}
 		difference = new Vector2(target.x - transform.position.x, target.y - transform.position.y);
 		newPos = new Vector2(transform.position.x + difference.x/cameraSpeedX, transform.position.y + difference.y/cameraSpeedY);
-		if (newPos.x - cameraHorizontalSize < (-level.GetComponent <Level> ().getLevelWidth () / 2) * level.GetComponent <Level> ().gridScale) {
-			newPos.x = (-level.GetComponent <Level> ().getLevelWidth () / 2) * level.GetComponent <Level> ().gridScale + cameraHorizontalSize;
+		if (newPos.x - cameraHorizontalSize < (-level.GetComponent <Level> ().getLevelWidth () / 2 + 1) * level.GetComponent <Level> ().gridScale) {
+			newPos.x = (-level.GetComponent <Level> ().getLevelWidth () / 2 + 1) * level.GetComponent <Level> ().gridScale + cameraHorizontalSize;
 		}
-		if (newPos.x + cameraHorizontalSize > (level.GetComponent <Level> ().getLevelWidth () / 2 - 1) * level.GetComponent <Level> ().gridScale) {
-			newPos.x = (level.GetComponent <Level> ().getLevelWidth () / 2 - 1) * level.GetComponent <Level> ().gridScale - cameraHorizontalSize;
+		if (newPos.x + cameraHorizontalSize > (level.GetComponent <Level> ().getLevelWidth () / 2 - 2) * level.GetComponent <Level> ().gridScale) {
+			newPos.x = (level.GetComponent <Level> ().getLevelWidth () / 2 - 2) * level.GetComponent <Level> ().gridScale - cameraHorizontalSize;
 		}
-		if (newPos.y - cameraVerticalSize < (-level.GetComponent <Level> ().getLevelHeight () / 2) * level.GetComponent <Level> ().gridScale) {
-			newPos.y = (-level.GetComponent <Level> ().getLevelHeight () / 2) * level.GetComponent <Level> ().gridScale + cameraVerticalSize;
+		if (newPos.y - cameraVerticalSize < (-level.GetComponent <Level> ().getLevelHeight () / 2 + 1) * level.GetComponent <Level> ().gridScale) {
+			newPos.y = (-level.GetComponent <Level> ().getLevelHeight () / 2 + 1) * level.GetComponent <Level> ().gridScale + cameraVerticalSize;
 		}
 		if (newPos.y + cameraVerticalSize > (level.GetComponent <Level> ().getLevelHeight () / 2 - 1) * level.GetComponent <Level> ().gridScale) {
 			newPos.y = (level.GetComponent <Level> ().getLevelHeight () / 2 - 1) * level.GetComponent <Level> ().gridScale - cameraVerticalSize;
