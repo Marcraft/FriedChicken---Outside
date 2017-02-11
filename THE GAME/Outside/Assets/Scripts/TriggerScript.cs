@@ -8,9 +8,11 @@ public class TriggerScript : MonoBehaviour {
 	private Bounds bounds;
 	private GameObject[] SpawnPoints;
 	private Vector2 spawnPoint;
+	public bool foundSpawnPoint;
 
 	// Use this for initialization
 	void Start () {
+		foundSpawnPoint = false;
 		playerIsHere = false;
 		changeScene = false;
 		bounds = GetComponent<BoxCollider2D> ().bounds;
@@ -37,6 +39,7 @@ public class TriggerScript : MonoBehaviour {
 		}
 		if (other.gameObject.CompareTag ("Spawn")) {
 			spawnPoint = other.transform.position;
+			foundSpawnPoint = true;
 			Destroy (other.gameObject);
 		}
 	}

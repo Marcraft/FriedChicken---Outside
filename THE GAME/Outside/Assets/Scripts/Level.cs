@@ -28,7 +28,6 @@ public class Level : MonoBehaviour
 	public GameObject raccoon;
 	public GameObject wolf;
 	public bool levelReady;
-
 	// Use this for initialization
 	void Start ()
 	{
@@ -159,7 +158,8 @@ public class Level : MonoBehaviour
 		for (int i = 0; i < GameObjects.Length; i++) {
 			if (GameObjects [i].CompareTag ("Arrow") || GameObjects [i].CompareTag ("Boulder") || GameObjects [i].CompareTag ("Enemy")
 			    || GameObjects [i].CompareTag ("Slab") || GameObjects [i].CompareTag ("Ground") || GameObjects [i].CompareTag ("tile")
-			    || GameObjects [i].CompareTag ("Platform") || GameObjects [i].CompareTag ("Spawn") || GameObjects [i].CompareTag ("Boulder")) {
+			    || GameObjects [i].CompareTag ("Platform") || GameObjects [i].CompareTag ("Spawn") || GameObjects [i].CompareTag ("Boulder")
+				|| GameObjects [i].CompareTag ("RaccoonProjectile")) {
 				Destroy (GameObjects [i]);
 			}
 		}

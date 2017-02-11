@@ -17,8 +17,8 @@ public class SceneChange : MonoBehaviour
 	public int currentLevel;
 
 	private float opacity;
-	private bool FoundSpawn;
 	private bool changeMap;
+	private bool spawnSet;
 
 
 	public enum Spawn
@@ -33,6 +33,7 @@ public class SceneChange : MonoBehaviour
 	private Spawn lastExit;
 
 	void Awake() {
+		opacity = 3;
 		level.GetComponent<Level> ().levelChoice = currentLevel;
 	}
 
@@ -40,33 +41,38 @@ public class SceneChange : MonoBehaviour
 	void Start ()
 	{
 		changeMap = false;
-		FoundSpawn = false;
 		canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
 
 	}
 
 	// Update is called once per frame
 	void Update ()
-	{
-		if (!FoundSpawn && level.GetComponent<Level>().levelReady) {
-			if (spawn == Spawn.left) {
+	{	
+		if (spawnSet == false) {
+			if (spawn == Spawn.left && level.GetComponent<Level> ().levelReady && leftTrigger.foundSpawnPoint == true) {
 				mainCamera.transform.position = new Vector3 (leftTrigger.spawnPlayer ().x, leftTrigger.spawnPlayer ().y, -10);
 				player.transform.position = leftTrigger.spawnPlayer ();
-
+				leftTrigger.foundSpawnPoint = false;
+				spawnSet = true;
 			}
-			if (spawn == Spawn.right) {
+			if (spawn == Spawn.right && level.GetComponent<Level> ().levelReady && rightTrigger.foundSpawnPoint == true) {
 				mainCamera.transform.position = new Vector3 (rightTrigger.spawnPlayer ().x, rightTrigger.spawnPlayer ().y, -10);
 				player.transform.position = rightTrigger.spawnPlayer ();
+				rightTrigger.foundSpawnPoint = false;
+				spawnSet = true;
 			}
-			if (spawn == Spawn.up) {
+			if (spawn == Spawn.up && level.GetComponent<Level> ().levelReady && upTrigger.foundSpawnPoint == true) {
 				mainCamera.transform.position = new Vector3 (upTrigger.spawnPlayer ().x, upTrigger.spawnPlayer ().y, -10);
 				player.transform.position = upTrigger.spawnPlayer ();
+				upTrigger.foundSpawnPoint = false;
+				spawnSet = true;
 			}
-			if (spawn == Spawn.down) {
+			if (spawn == Spawn.down && level.GetComponent<Level> ().levelReady && downTrigger.foundSpawnPoint == true) {
 				mainCamera.transform.position = new Vector3 (downTrigger.spawnPlayer ().x, downTrigger.spawnPlayer ().y, -10);
 				player.transform.position = downTrigger.spawnPlayer ();
+				downTrigger.foundSpawnPoint = false;
+				spawnSet = true;
 			}
-			FoundSpawn = true;
 		}
 		////////////////
 		if (leftTrigger.changeScene) {
@@ -93,7 +99,11 @@ public class SceneChange : MonoBehaviour
 			if (opacity >= 1.5) {
 				//----CHANGE LEVEL-----//
 				changeMap = false;
-				FoundSpawn = false;
+				spawnSet = false;
+				leftTrigger.foundSpawnPoint = false;
+				rightTrigger.foundSpawnPoint = false;
+				upTrigger.foundSpawnPoint = false;
+				downTrigger.foundSpawnPoint = false;
 				player.transform.position = new Vector2();
 
 				player.GetComponent<PlayerController> ().changeScene = false;
@@ -126,6 +136,10 @@ public class SceneChange : MonoBehaviour
 				nextLevel = 105;
 			if (currentLevel == 105)
 				nextLevel = 106;
+			if (currentLevel == 107)
+				nextLevel = 109;
+			if (currentLevel == 109)
+				nextLevel = 110;
 		} else if (spawn == Spawn.right) {
 			if (currentLevel == 101)
 				nextLevel = 0;
@@ -139,6 +153,8 @@ public class SceneChange : MonoBehaviour
 				nextLevel = 104;
 			if (currentLevel == 106)
 				nextLevel = 105;
+			if (currentLevel == 109)
+				nextLevel = 107;
 
 		} else if (spawn == Spawn.up) {
 			if (currentLevel == 106)
