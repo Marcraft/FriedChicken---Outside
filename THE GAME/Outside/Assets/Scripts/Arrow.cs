@@ -52,7 +52,7 @@ public class Arrow : MonoBehaviour {
 		}
 		if(other.CompareTag("Enemy")){
 			hitEnemy = true;
-			other.GetComponent<Enemy> ().health--;
+			other.GetComponent<Enemy> ().hurt = true;
 		}
 		if(other.CompareTag("RaccoonProjectile")){
 			hitEnemy = true;
