@@ -2,7 +2,13 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PlayerController.cs">
     <Files>
-      <File FileName="Assets\Scripts\PlayerController.cs" Line="89" Column="18" />
+      <File FileName="Assets\Scripts\PlayerController.cs" Line="433" Column="8" />
+      <File FileName="Assets\Scripts\Enemy.cs" Line="43" Column="37" />
+      <File FileName="Assets\Scripts\RaccoonProjectile.cs" Line="52" Column="64" />
+      <File FileName="Assets\Scripts\SpriteControl.cs" Line="14" Column="3" />
+      <File FileName="Assets\Scripts\Level.cs" Line="85" Column="29" />
+      <File FileName="Assets\Scripts\SceneChange.cs" Line="112" Column="14" />
+      <File FileName="Assets\Scripts\Attack.cs" Line="24" Column="20" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

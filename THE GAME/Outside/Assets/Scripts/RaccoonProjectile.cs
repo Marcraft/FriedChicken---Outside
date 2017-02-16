@@ -46,6 +46,11 @@ public class RaccoonProjectile : MonoBehaviour {
 		}
 		if(other.CompareTag("Player")){
 			hitPlayer = true;
+			if (other.GetComponent<Rigidbody2D>().position.x > rigidBody.position.x) {
+				other.GetComponent<PlayerController>().facingRight = false;
+			} else {
+				other.GetComponent<PlayerController> ().facingRight = true;
+			}
 			other.GetComponent <PlayerController>().health--;
 			other.GetComponent <PlayerController> ().hurt = true;
 		}

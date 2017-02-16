@@ -36,10 +36,14 @@ public class PlayerController : MonoBehaviour
 	public float combo1;
 	public float combo2;
 	public float combo3;
+	public float comboAir;
 	public float knockback;
+	public float bowCooldown;
+
 
 	private float comboTimer;
 	private bool nextCombo;
+	private float bowTimer;
 	private float jumpTimer;
 	private bool ChangedState;
 	private Animator animator;
@@ -68,8 +72,7 @@ public class PlayerController : MonoBehaviour
 	{
 		idle,
 		melee,
-		ranged,
-		roll
+		ranged
 	}
 
 	public CombatState combatState = CombatState.idle;
@@ -79,7 +82,8 @@ public class PlayerController : MonoBehaviour
 		zero,
 		one,
 		two,
-		three
+		three,
+		air
 	}
 	public MeleeCombo meleeCombo = MeleeCombo.zero;
 	// Use this for initialization
@@ -104,6 +108,9 @@ public class PlayerController : MonoBehaviour
 		animator.SetBool ("Roll", roll);
 		animator.SetBool ("ChangeState", ChangedState);
 		ChangedState = false;
+		if (bowTimer > 0 && combatState != CombatState.ranged) {
+			bowTimer -= Time.deltaTime;
+		}
 		if (hurt) {
 			Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), true);
 			hurtTimer -= Time.deltaTime;
@@ -194,7 +201,8 @@ public class PlayerController : MonoBehaviour
 						state = State.crouching;
 						ChangedState = true;
 					}
-					if (Input.GetKeyDown (rangedKey)) {
+					if (Input.GetKeyDown (rangedKey) && bowTimer <= 0) {
+						bowTimer = bowCooldown;
 						combatState = CombatState.ranged;
 					}
 					if (Input.GetKeyDown (meleeKey)) {
@@ -290,7 +298,10 @@ public class PlayerController : MonoBehaviour
 							meleeCombo = MeleeCombo.zero;
 							combatState = CombatState.idle;
 						}
-
+					}
+					else if (meleeCombo == MeleeCombo.air) {
+						meleeCombo = MeleeCombo.zero;
+						combatState = CombatState.idle;
 					}
 				}
 				if (combatState == CombatState.ranged) {
@@ -301,21 +312,20 @@ public class PlayerController : MonoBehaviour
 						ChangedState = true;
 					}
 					if (Input.GetKeyUp (rangedKey)) {
-						GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x, transform.position.y - 0.02f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
 						if (facingRight) {
+							GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x + 0.5f, transform.position.y - 0.02f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
 							currentArrow.GetComponent<Arrow> ().goingRight = true;
 						} else {
+							GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x - 0.5f, transform.position.y - 0.02f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
 							currentArrow.GetComponent<Arrow> ().goingRight = false;
 						}
+						rigidBody.velocity =  new Vector2 (0, rigidBody.velocity.y);
 						combatState = CombatState.idle;
 					}
 					if (Input.GetKey (downKey)) {
 						state = State.crouching;
 						ChangedState = true;
 					}
-
-				}
-				if (combatState == CombatState.roll) {
 
 				}
 
@@ -334,7 +344,8 @@ public class PlayerController : MonoBehaviour
 					}
 				}
 				if (combatState == CombatState.idle) {
-					if (Input.GetKeyDown (rangedKey)) {
+					if (Input.GetKeyDown (rangedKey) && bowTimer <= 0) {
+						bowTimer = bowCooldown;
 						combatState = CombatState.ranged;
 					}
 					if (Input.GetKey (upKey)) {
@@ -344,9 +355,6 @@ public class PlayerController : MonoBehaviour
 							state = State.climbing;
 							ChangedState = true;
 						}
-					}
-					if (Input.GetKeyDown (rangedKey)) {
-						combatState = CombatState.ranged;
 					}
 					if (Input.GetKeyDown (meleeKey)) {
 						state = State.standing;
@@ -366,12 +374,14 @@ public class PlayerController : MonoBehaviour
 				}
 				if (combatState == CombatState.ranged) {
 					if (Input.GetKeyUp (rangedKey)) {
-						GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x, transform.position.y - 0.25f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
 						if (facingRight) {
+							GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x + 0.5f, transform.position.y - 0.25f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
 							currentArrow.GetComponent<Arrow> ().goingRight = true;
 						} else {
+							GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x - 0.5f, transform.position.y - 0.25f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
 							currentArrow.GetComponent<Arrow> ().goingRight = false;
 						}
+						rigidBody.velocity =  new Vector2 (0, rigidBody.velocity.y);
 						combatState = CombatState.idle;
 					}
 
@@ -403,24 +413,33 @@ public class PlayerController : MonoBehaviour
 							ChangedState = true;
 						}
 					}
-					if (Input.GetKeyDown (rangedKey)) {
+					if (Input.GetKeyDown (rangedKey) && bowTimer <= 0) {
+						bowTimer = bowCooldown;
 						combatState = CombatState.ranged;
 					}
 					if (Input.GetKeyDown (meleeKey)) {
+						meleeCombo = MeleeCombo.zero;
 						combatState = CombatState.melee;
 					}
 				}
 				if (combatState == CombatState.melee) {
-					//NOT IMPLEMENTED
-					combatState = CombatState.idle;
-
+					if (meleeCombo == MeleeCombo.zero) {
+						comboTimer = comboAir;
+						meleeCombo = MeleeCombo.air;
+					} else if (meleeCombo == MeleeCombo.air) {
+						if (comboTimer <= 0) {
+							meleeCombo = MeleeCombo.zero;
+							combatState = CombatState.idle;
+						}
+					}
 				}
 				if (combatState == CombatState.ranged) {
 					if (Input.GetKeyUp (rangedKey)) {
-						GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x, transform.position.y + 0.09f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
 						if (facingRight) {
+							GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x + 0.5f, transform.position.y + 0.09f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
 							currentArrow.GetComponent<Arrow> ().goingRight = true;
 						} else {
+							GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x - 0.5f, transform.position.y + 0.09f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
 							currentArrow.GetComponent<Arrow> ().goingRight = false;
 						}
 						combatState = CombatState.idle;
@@ -544,13 +563,15 @@ public class PlayerController : MonoBehaviour
 	void OnCollisionEnter2D(Collision2D other) {
 		if (!hurt) {
 			if (other.gameObject.tag == "Enemy") {
-				if (other.rigidbody.position.x > rigidBody.position.x) {
-					facingRight = true;
-				} else {
-					facingRight = false;
+				if (!other.gameObject.GetComponent<Enemy> ().hurting) {
+					if (other.rigidbody.position.x > rigidBody.position.x) {
+						facingRight = true;
+					} else {
+						facingRight = false;
+					}
+					hurt = true;
+					health--;
 				}
-				hurt = true;
-				health--;
 			}
 		}
 	}

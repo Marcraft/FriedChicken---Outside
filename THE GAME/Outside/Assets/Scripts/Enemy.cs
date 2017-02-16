@@ -5,8 +5,8 @@ public class Enemy : MonoBehaviour
 	public bool wolf;
 	public bool raccoon;
 	public bool hurt;
+	public bool hurting;
 	public float knockback;
-	private bool knockedBack;
 	private float hurtTimer;
 	public GameObject projectile;
 	public float timerInterval;
@@ -33,22 +33,25 @@ public class Enemy : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		animator.SetBool ("hurt", hurt);
+		animator.SetBool ("hurt", hurting);
 		if (hurt) {
-			hurtTimer -= Time.deltaTime;
-			if (facingRight && !knockedBack) {
+			hurtTimer = 0.7f;
+			hurting = true;
+			if (facingRight) {
 				rigidBody.velocity = new Vector2 (-knockback, knockback);
 				health--;
-				knockedBack = true;
-			} else if(!facingRight && !knockedBack) {
+			} else if(!facingRight) {
 				rigidBody.velocity = new Vector2 (knockback, knockback);
 				health--;
-				knockedBack = true;
 			}
+			hurt = false;
+		}
+		if (hurting) {
+			Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), true);
+			hurtTimer -= Time.deltaTime;
 			if (hurtTimer <= 0) {
-				hurt = false;
-				knockedBack = false;
-				hurtTimer = 0.5f;
+				hurting = false;
+				Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), false);
 			}
 		}
 		if (raccoon) {
@@ -81,6 +84,7 @@ public class Enemy : MonoBehaviour
 			}
 		}
 		if (health <= 0) {
+			Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), false);
 			Destroy (gameObject);
 		}
 	}
