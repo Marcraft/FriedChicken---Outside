@@ -49,6 +49,7 @@
      <Compile Include="Assets\Scripts\Arrow.cs" />
      <Compile Include="Assets\Scripts\Attack.cs" />
      <Compile Include="Assets\Scripts\Background.cs" />
+     <Compile Include="Assets\Scripts\BossFight1.cs" />
      <Compile Include="Assets\Scripts\Boulder.cs" />
      <Compile Include="Assets\Scripts\CameraScript.cs" />
      <Compile Include="Assets\Scripts\Darkness.cs" />
@@ -59,11 +60,13 @@
      <Compile Include="Assets\Scripts\JumpCheck.cs" />
      <Compile Include="Assets\Scripts\Level.cs" />
      <Compile Include="Assets\Scripts\LevelDesigns.cs" />
+     <Compile Include="Assets\Scripts\MenuControls.cs" />
      <Compile Include="Assets\Scripts\OOB.cs" />
      <Compile Include="Assets\Scripts\OnLadder.cs" />
      <Compile Include="Assets\Scripts\OnPlatform.cs" />
      <Compile Include="Assets\Scripts\OneWayPlatform.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
+     <Compile Include="Assets\Scripts\PlayerTrap.cs" />
      <Compile Include="Assets\Scripts\RaccoonProjectile.cs" />
      <Compile Include="Assets\Scripts\SceneChange.cs" />
      <Compile Include="Assets\Scripts\Slab.cs" />

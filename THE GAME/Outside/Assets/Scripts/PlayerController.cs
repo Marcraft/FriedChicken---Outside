@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
 	public GameObject globalVariables;
 
 	public float health;
+	public float maxHealth;
+	public bool dead;
 
 	public float groundControl;
 	public float airControl;
@@ -73,6 +75,7 @@ public class PlayerController : MonoBehaviour
 		idle,
 		melee,
 		ranged
+
 	}
 
 	public CombatState combatState = CombatState.idle;
@@ -85,15 +88,17 @@ public class PlayerController : MonoBehaviour
 		three,
 		air
 	}
+
 	public MeleeCombo meleeCombo = MeleeCombo.zero;
 	// Use this for initialization
 	void Start ()
 	{
 		hurtTimer = 0.2f;
-		rollTimer = 0.5f;
+		rollTimer = 0.6f;
 		rigidBody = gameObject.GetComponent<Rigidbody2D> ();
 		spiritBody = spirit.GetComponent<Rigidbody2D> ();
 		animator = gameObject.GetComponent<Animator> ();
+		health = maxHealth;
 	}
 
 	// Update is called once per frame
@@ -101,6 +106,7 @@ public class PlayerController : MonoBehaviour
 	{
 		animator.SetFloat ("Speed", Mathf.Abs (rigidBody.velocity.x));
 		animator.SetFloat ("VerticalSpeed", rigidBody.velocity.y);
+		animator.SetFloat ("Health", health);
 		animator.SetInteger ("State", (int)state);
 		animator.SetInteger ("CombatState", (int)combatState);
 		animator.SetInteger ("Combo", (int)meleeCombo);
@@ -111,9 +117,21 @@ public class PlayerController : MonoBehaviour
 		if (bowTimer > 0 && combatState != CombatState.ranged) {
 			bowTimer -= Time.deltaTime;
 		}
-		if (hurt) {
+		if (dead) {
+			hurt = false;
+			rigidBody.velocity = new Vector2 (0, 0);
+			knockedBack = false;
+			hurtTimer = 0.2f;
+			state = State.standing;
+			combatState = CombatState.idle;
+			Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), false);
+		}
+		else if (hurt) {
 			Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), true);
 			hurtTimer -= Time.deltaTime;
+			if (health < 0) {
+				dead = true;
+			}
 			if (state == State.climbing) {
 				rigidBody.isKinematic = false;
 			}
@@ -130,7 +148,7 @@ public class PlayerController : MonoBehaviour
 			if (facingRight && !knockedBack) {
 				rigidBody.velocity = new Vector2 (-knockback, knockback);
 				knockedBack = true;
-			} else if(!facingRight && !knockedBack) {
+			} else if (!facingRight && !knockedBack) {
 				rigidBody.velocity = new Vector2 (knockback, knockback);
 				knockedBack = true;
 			}
@@ -142,29 +160,27 @@ public class PlayerController : MonoBehaviour
 				combatState = CombatState.idle;
 				Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), false);
 			}
-		}
-		else if (roll) {
+		} else if (roll) {
 			Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), true);
 			rollTimer -= Time.deltaTime;
 			if (facingRight && !leaped) {
 				rigidBody.velocity = new Vector2 (rollLeapStrength, rigidBody.velocity.y);
 				leaped = true;
-			} else if(!facingRight && !leaped) {
+			} else if (!facingRight && !leaped) {
 				rigidBody.velocity = new Vector2 (-rollLeapStrength, rigidBody.velocity.y);
 				leaped = true;
 			}
 			if (rollTimer <= 0) {
 				roll = false;
 				leaped = false;
-				rollTimer = 0.5f;
+				rollTimer = 0.6f;
 				if (rigidBody.velocity.x < -speed)
-					rigidBody.velocity =  new Vector2 (-speed, rigidBody.velocity.y);
+					rigidBody.velocity = new Vector2 (-speed, rigidBody.velocity.y);
 				if (rigidBody.velocity.x > speed)
-					rigidBody.velocity =  new Vector2 (speed, rigidBody.velocity.y);
+					rigidBody.velocity = new Vector2 (speed, rigidBody.velocity.y);
 				Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), false);
 			}
-		}
-		else {
+		} else {
 			//STATE STANDING
 			if (state == State.standing) {
 				if (!onGround) {
@@ -234,8 +250,7 @@ public class PlayerController : MonoBehaviour
 								roll = true;
 								meleeCombo = MeleeCombo.zero;
 								combatState = CombatState.idle;
-							}
-							else if (nextCombo) {
+							} else if (nextCombo) {
 								if (Input.GetKey (leftKey)) {
 									transform.localScale = new Vector3 (-1, 1, 1);
 									facingRight = false;
@@ -267,8 +282,7 @@ public class PlayerController : MonoBehaviour
 								roll = true;
 								meleeCombo = MeleeCombo.zero;
 								combatState = CombatState.idle;
-							}
-							else if (nextCombo) {
+							} else if (nextCombo) {
 								if (Input.GetKey (leftKey)) {
 									transform.localScale = new Vector3 (-1, 1, 1);
 									facingRight = false;
@@ -298,13 +312,21 @@ public class PlayerController : MonoBehaviour
 							meleeCombo = MeleeCombo.zero;
 							combatState = CombatState.idle;
 						}
-					}
-					else if (meleeCombo == MeleeCombo.air) {
+					} else if (meleeCombo == MeleeCombo.air) {
 						meleeCombo = MeleeCombo.zero;
 						combatState = CombatState.idle;
 					}
 				}
 				if (combatState == CombatState.ranged) {
+					rigidBody.velocity = new Vector2 (0, rigidBody.velocity.y);
+					if (Input.GetKey (leftKey)) {
+						transform.localScale = new Vector3 (-1, 1, 1);
+						facingRight = false;
+					}
+					if (Input.GetKey (rightKey)) {
+						transform.localScale = new Vector3 (1, 1, 1);
+						facingRight = true;
+					}
 					if (Input.GetKeyDown (jumpKey)) {
 						rigidBody.velocity = new Vector2 (rigidBody.velocity.x, jumpStrength);
 						jumpTimer = 0.5f;
@@ -319,7 +341,6 @@ public class PlayerController : MonoBehaviour
 							GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x - 0.5f, transform.position.y - 0.02f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
 							currentArrow.GetComponent<Arrow> ().goingRight = false;
 						}
-						rigidBody.velocity =  new Vector2 (0, rigidBody.velocity.y);
 						combatState = CombatState.idle;
 					}
 					if (Input.GetKey (downKey)) {
@@ -373,6 +394,14 @@ public class PlayerController : MonoBehaviour
 					}
 				}
 				if (combatState == CombatState.ranged) {
+					if (Input.GetKey (leftKey)) {
+						transform.localScale = new Vector3 (-1, 1, 1);
+						facingRight = false;
+					}
+					if (Input.GetKey (rightKey)) {
+						transform.localScale = new Vector3 (1, 1, 1);
+						facingRight = true;
+					}
 					if (Input.GetKeyUp (rangedKey)) {
 						if (facingRight) {
 							GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x + 0.5f, transform.position.y - 0.25f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
@@ -381,7 +410,7 @@ public class PlayerController : MonoBehaviour
 							GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x - 0.5f, transform.position.y - 0.25f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
 							currentArrow.GetComponent<Arrow> ().goingRight = false;
 						}
-						rigidBody.velocity =  new Vector2 (0, rigidBody.velocity.y);
+						rigidBody.velocity = new Vector2 (0, rigidBody.velocity.y);
 						combatState = CombatState.idle;
 					}
 
@@ -390,8 +419,11 @@ public class PlayerController : MonoBehaviour
 		//STATE JUMPING
 		else if (state == State.jumping) {
 				if (onGround) {
-					state = State.standing;
-					ChangedState = true;
+					rigidBody.velocity = new Vector2 (0, 0);
+					if (comboTimer <= 0) {
+						state = State.standing;
+						ChangedState = true;
+					}
 				}
 				if (Input.GetKeyUp (jumpKey)) {
 					rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y * jumpTimer);
@@ -434,6 +466,14 @@ public class PlayerController : MonoBehaviour
 					}
 				}
 				if (combatState == CombatState.ranged) {
+					if (Input.GetKey (leftKey)) {
+						transform.localScale = new Vector3 (-1, 1, 1);
+						facingRight = false;
+					}
+					if (Input.GetKey (rightKey)) {
+						transform.localScale = new Vector3 (1, 1, 1);
+						facingRight = true;
+					}
 					if (Input.GetKeyUp (rangedKey)) {
 						if (facingRight) {
 							GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x + 0.5f, transform.position.y + 0.09f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
@@ -560,7 +600,9 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 	}
-	void OnCollisionEnter2D(Collision2D other) {
+
+	void OnCollisionEnter2D (Collision2D other)
+	{
 		if (!hurt) {
 			if (other.gameObject.tag == "Enemy") {
 				if (!other.gameObject.GetComponent<Enemy> ().hurting) {
@@ -572,6 +614,10 @@ public class PlayerController : MonoBehaviour
 					hurt = true;
 					health--;
 				}
+			}
+			if (other.gameObject.tag == "Spikes") {
+				hurt = true;
+				health--;
 			}
 		}
 	}

@@ -7,6 +7,7 @@ public class SceneChange : MonoBehaviour
 	public GameObject player;
 	public GameObject mainCamera;
 	public GameObject canvas;
+	public GameObject deathCanvas;
 	public GameObject level;
 
 	public TriggerScript leftTrigger;
@@ -17,8 +18,10 @@ public class SceneChange : MonoBehaviour
 	public int currentLevel;
 
 	private float opacity;
+	private float deathOpacity;
 	private bool changeMap;
 	private bool spawnSet;
+	private bool deadStart;
 
 
 	public enum Spawn
@@ -34,6 +37,7 @@ public class SceneChange : MonoBehaviour
 
 	void Awake() {
 		opacity = 3;
+		deathOpacity = 0;
 		level.GetComponent<Level> ().levelChoice = currentLevel;
 	}
 
@@ -42,6 +46,7 @@ public class SceneChange : MonoBehaviour
 	{
 		changeMap = false;
 		canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
+		deathCanvas.GetComponent<CanvasRenderer> ().SetAlpha (deathOpacity);
 
 	}
 
@@ -105,7 +110,6 @@ public class SceneChange : MonoBehaviour
 				upTrigger.foundSpawnPoint = false;
 				downTrigger.foundSpawnPoint = false;
 				player.transform.position = new Vector2();
-
 				player.GetComponent<PlayerController> ().changeScene = false;
 				level.GetComponent<Level> ().levelChoice = chooseNextLevel ();
 				level.GetComponent<Level> ().resetLevel ();
@@ -119,6 +123,38 @@ public class SceneChange : MonoBehaviour
 				opacity -= Time.deltaTime * 5;
 				canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
 			}
+		}
+		if (player.GetComponent<PlayerController> ().dead && level.GetComponent<Level> ().resetTimer <= 0) {
+			canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
+			changeMap = false;
+			spawnSet = false;
+			leftTrigger.foundSpawnPoint = false;
+			rightTrigger.foundSpawnPoint = false;
+			upTrigger.foundSpawnPoint = false;
+			downTrigger.foundSpawnPoint = false;
+			level.GetComponent<Level> ().resetTimer = 5;
+			player.GetComponent<PlayerController> ().changeScene = false;
+			//level.GetComponent<Level> ().levelChoice = chooseNextLevel ();
+			level.GetComponent<Level> ().levelChoice = 101;
+			currentLevel = 101;
+			deadStart = true;
+		}
+		if (player.GetComponent<PlayerController> ().dead) {
+			level.GetComponent<Level> ().resetTimer -= Time.deltaTime;
+			deathOpacity += Time.deltaTime;
+			deathCanvas.GetComponent<CanvasRenderer> ().SetAlpha (deathOpacity);
+		}
+		if (level.GetComponent<Level> ().resetTimer <= 0 && deadStart) {
+			deathOpacity = 0;
+			deathCanvas.GetComponent<CanvasRenderer> ().SetAlpha (deathOpacity);
+			opacity = 1.5f;
+			player.transform.position = new Vector2 ();
+			level.GetComponent<Level> ().resetLevel ();
+			Start ();
+			player.GetComponent<PlayerController> ().dead = false;
+			player.GetComponent<PlayerController> ().health = player.GetComponent<PlayerController> ().maxHealth;
+			player.GetComponent<PlayerController> ().canClimb = 0;
+			deadStart = false;
 		}
 	}
 
@@ -155,6 +191,8 @@ public class SceneChange : MonoBehaviour
 				nextLevel = 105;
 			if (currentLevel == 109)
 				nextLevel = 107;
+			if (currentLevel == 110)
+				nextLevel = 109;
 
 		} else if (spawn == Spawn.up) {
 			if (currentLevel == 106)

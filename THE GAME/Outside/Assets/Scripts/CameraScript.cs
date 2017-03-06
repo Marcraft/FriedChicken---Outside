@@ -6,12 +6,13 @@ public class CameraScript : MonoBehaviour {
 	public GameObject player;
 	public GameObject spirit;
 	public GameObject level;
-	private Vector2 target;
+	public Vector2 target;
 	private Vector2 difference;
 	private Vector2 newPos;
 	private float cameraVerticalSize;
 	private float cameraHorizontalSize;
 
+	public bool cutscene;
 	public float cameraSpeedX;
 	public float cameraSpeedY;
 	// Use this for initialization
@@ -24,13 +25,14 @@ public class CameraScript : MonoBehaviour {
 	void FixedUpdate () {
 		cameraVerticalSize = Camera.main.orthographicSize;
 		cameraHorizontalSize = cameraVerticalSize * Screen.width / Screen.height;
-		if (player.GetComponent<PlayerController>().state == PlayerController.State.outofbody) {
-			target = new Vector2 ((player.transform.position.x + spirit.transform.position.x)/2, (player.transform.position.y + spirit.transform.position.y)/2);
-		}
-		else if (player.GetComponent<PlayerController> ().facingRight) {
-			target = new Vector2 (player.transform.position.x + 1, player.transform.position.y);
-		} else {
-			target = new Vector2 (player.transform.position.x - 1, player.transform.position.y);
+		if (!cutscene) {
+			if (player.GetComponent<PlayerController> ().state == PlayerController.State.outofbody) {
+				target = new Vector2 ((player.transform.position.x + spirit.transform.position.x) / 2, (player.transform.position.y + spirit.transform.position.y) / 2);
+			} else if (player.GetComponent<PlayerController> ().facingRight) {
+				target = new Vector2 (player.transform.position.x + 1, player.transform.position.y);
+			} else {
+				target = new Vector2 (player.transform.position.x - 1, player.transform.position.y);
+			}
 		}
 		difference = new Vector2(target.x - transform.position.x, target.y - transform.position.y);
 		newPos = new Vector2(transform.position.x + difference.x/cameraSpeedX, transform.position.y + difference.y/cameraSpeedY);

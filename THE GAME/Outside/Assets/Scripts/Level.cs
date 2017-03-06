@@ -11,6 +11,7 @@ public class Level : MonoBehaviour
 
 	public int levelChoice;
 	public float gridScale;
+	public float resetTimer;
 
 	public GameObject ground;
 	public GameObject grass;
@@ -27,6 +28,9 @@ public class Level : MonoBehaviour
 
 	public GameObject raccoon;
 	public GameObject wolf;
+
+	public GameObject boss1;
+
 	public bool levelReady;
 	// Use this for initialization
 	void Start ()
@@ -143,6 +147,10 @@ public class Level : MonoBehaviour
 				else if (compare (levelDesign [i, j], 255, 128, 128)) {
 					Instantiate (wolf, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 				}
+				//boss1
+				else if (compare (levelDesign [i, j], 128, 0, 128)) {
+					Instantiate (boss1, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+				}
 			}
 		}
 	}
@@ -178,10 +186,12 @@ public class Level : MonoBehaviour
 			if (GameObjects [i].CompareTag ("Arrow") || GameObjects [i].CompareTag ("Boulder") || GameObjects [i].CompareTag ("Enemy")
 			    || GameObjects [i].CompareTag ("Slab") || GameObjects [i].CompareTag ("Ground") || GameObjects [i].CompareTag ("tile")
 			    || GameObjects [i].CompareTag ("Platform") || GameObjects [i].CompareTag ("Spawn") || GameObjects [i].CompareTag ("Boulder")
-				|| GameObjects [i].CompareTag ("RaccoonProjectile")) {
+				|| GameObjects [i].CompareTag ("RaccoonProjectile") || GameObjects [i].CompareTag ("BossFight")) {
 				Destroy (GameObjects [i]);
 			}
 		}
-		Start ();
+		if (resetTimer <= 0) {
+			Start ();
+		}
 	}
 }

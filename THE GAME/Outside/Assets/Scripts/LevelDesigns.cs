@@ -37,6 +37,8 @@ public class LevelDesigns : MonoBehaviour
 			currentLevel = level108;
 		else if (level == 109)
 			currentLevel = level109;
+		else if (level == 110)
+			currentLevel = level110;
 		Color32[,] levelArray = new Color32[currentLevel.width, currentLevel.height];
 		for (int i = 0; i < currentLevel.width; i++) {
 			for (int j = 0; j < currentLevel.height; j++) {
