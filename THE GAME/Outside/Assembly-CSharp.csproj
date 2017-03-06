@@ -60,6 +60,7 @@
      <Compile Include="Assets\Scripts\JumpCheck.cs" />
      <Compile Include="Assets\Scripts\Level.cs" />
      <Compile Include="Assets\Scripts\LevelDesigns.cs" />
+     <Compile Include="Assets\Scripts\LynnDialogue.cs" />
      <Compile Include="Assets\Scripts\MenuControls.cs" />
      <Compile Include="Assets\Scripts\OOB.cs" />
      <Compile Include="Assets\Scripts\OnLadder.cs" />

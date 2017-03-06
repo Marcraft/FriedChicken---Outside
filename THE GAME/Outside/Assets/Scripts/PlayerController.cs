@@ -615,10 +615,13 @@ public class PlayerController : MonoBehaviour
 					health--;
 				}
 			}
-			if (other.gameObject.tag == "Spikes") {
-				hurt = true;
-				health--;
-			}
+		}
+	}
+	void OnTriggerEnter2D (Collider2D other)
+	{
+		if (other.tag == "Spikes") {
+			hurt = true;
+			health = -1;
 		}
 	}
 }

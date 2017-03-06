@@ -9,6 +9,7 @@ public class SceneChange : MonoBehaviour
 	public GameObject canvas;
 	public GameObject deathCanvas;
 	public GameObject level;
+	public GameObject dialogue;
 
 	public TriggerScript leftTrigger;
 	public TriggerScript rightTrigger;
@@ -47,7 +48,8 @@ public class SceneChange : MonoBehaviour
 		changeMap = false;
 		canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
 		deathCanvas.GetComponent<CanvasRenderer> ().SetAlpha (deathOpacity);
-
+		dialogue.GetComponent<LynnDialogue> ().newMap = true;
+		dialogue.GetComponent<LynnDialogue> ().currentMap = currentLevel;
 	}
 
 	// Update is called once per frame
@@ -115,6 +117,8 @@ public class SceneChange : MonoBehaviour
 				level.GetComponent<Level> ().resetLevel ();
 				Start ();
 				player.GetComponent<PlayerController> ().canClimb = 0;
+				dialogue.GetComponent<LynnDialogue> ().newMap = true;
+				dialogue.GetComponent<LynnDialogue> ().currentMap = currentLevel;
 				//--------------------//
 
 			}
@@ -154,6 +158,8 @@ public class SceneChange : MonoBehaviour
 			player.GetComponent<PlayerController> ().dead = false;
 			player.GetComponent<PlayerController> ().health = player.GetComponent<PlayerController> ().maxHealth;
 			player.GetComponent<PlayerController> ().canClimb = 0;
+			dialogue.GetComponent<LynnDialogue> ().newMap = true;
+			dialogue.GetComponent<LynnDialogue> ().currentMap = currentLevel;
 			deadStart = false;
 		}
 	}
@@ -178,7 +184,7 @@ public class SceneChange : MonoBehaviour
 				nextLevel = 110;
 		} else if (spawn == Spawn.right) {
 			if (currentLevel == 101)
-				nextLevel = 0;
+				nextLevel = 102;
 			if (currentLevel == 102)
 				nextLevel = 101;
 			if (currentLevel == 103)
@@ -195,12 +201,16 @@ public class SceneChange : MonoBehaviour
 				nextLevel = 109;
 
 		} else if (spawn == Spawn.up) {
+			if (currentLevel == 101)
+				nextLevel = 102;
 			if (currentLevel == 106)
 				nextLevel = 108;
 			if (currentLevel == 107)
 				nextLevel = 106;
 			
 		} else if (spawn == Spawn.down) {
+			if (currentLevel == 101)
+				nextLevel = 102;
 			if (currentLevel == 106)
 				nextLevel = 107;
 			if (currentLevel == 108)
