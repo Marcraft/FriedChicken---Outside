@@ -535,7 +535,10 @@ public class PlayerController : MonoBehaviour
 
 	void FixedUpdate ()
 	{
-		if (!hurt) {
+		if (dead) {
+			rigidBody.velocity = new Vector2 (0, 0);
+		}
+		else if (!hurt) {
 			if (Input.GetKey (jumpKey) && jumpTimer < 1) {
 				jumpTimer += Time.deltaTime;
 			}
@@ -603,7 +606,7 @@ public class PlayerController : MonoBehaviour
 
 	void OnCollisionEnter2D (Collision2D other)
 	{
-		if (!hurt) {
+		if (!hurt && !dead) {
 			if (other.gameObject.tag == "Enemy") {
 				if (!other.gameObject.GetComponent<Enemy> ().hurting) {
 					if (other.rigidbody.position.x > rigidBody.position.x) {
@@ -619,9 +622,12 @@ public class PlayerController : MonoBehaviour
 	}
 	void OnTriggerEnter2D (Collider2D other)
 	{
-		if (other.tag == "Spikes") {
-			hurt = true;
-			health = -1;
+		if (!dead) {
+			if (other.tag == "Spikes") {
+				hurt = true;
+				roll = false;
+				health = -1;
+			}
 		}
 	}
 }
