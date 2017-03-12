@@ -15,10 +15,10 @@ public class RaccoonProjectile : MonoBehaviour {
 		rigidBody = gameObject.GetComponent<Rigidbody2D> ();
 		if (goingRight) {
 			transform.localScale = new Vector3 (1, 1, 1);
-			rigidBody.velocity = new Vector2 (speed, speed);
+			rigidBody.velocity = new Vector2 (speed + Random.Range(-2,2), speed + Random.Range(-2,2));
 		} else {
 			transform.localScale = new Vector3 (-1, 1, 1);
-			rigidBody.velocity = new Vector2 (-speed, speed);
+			rigidBody.velocity = new Vector2 (-speed + Random.Range(-2,2), speed + Random.Range(-2,2));
 		}
 		opacity = 1;
 	}

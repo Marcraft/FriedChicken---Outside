@@ -55,6 +55,9 @@ public class PlayerController : MonoBehaviour
 	public bool hurt;
 	public bool knockedBack;
 	private float hurtTimer;
+	private bool invincible;
+	private float invincibleTimer;
+	private int invincibleBlink;
 	public bool roll;
 	public bool leaped;
 	private float rollTimer;
@@ -117,6 +120,22 @@ public class PlayerController : MonoBehaviour
 		if (bowTimer > 0 && combatState != CombatState.ranged) {
 			bowTimer -= Time.deltaTime;
 		}
+		if (invincible) {
+			invincibleTimer += Time.deltaTime;
+			invincibleBlink++;
+			if (invincibleBlink % 2 == 0) {
+				GetComponent<Renderer>().enabled = false;
+			} else {
+				GetComponent<Renderer>().enabled = true;
+			}
+			if (invincibleTimer > 2) {
+				GetComponent<Renderer>().enabled = true;
+				invincible = false;
+				invincibleBlink = 0;
+				invincibleTimer = 0;
+				Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), false);
+			}		
+		}
 		if (dead) {
 			hurt = false;
 			rigidBody.velocity = new Vector2 (0, 0);
@@ -136,6 +155,7 @@ public class PlayerController : MonoBehaviour
 				rigidBody.isKinematic = false;
 			}
 			if (state == State.outofbody) {
+				rigidBody.isKinematic = false;
 				spiritBody.velocity = new Vector2 (0, 0);
 				spirit.transform.localPosition = new Vector2 (0, 0);
 				spirit.transform.localScale = new Vector3 (1, 1, 1);
@@ -153,12 +173,12 @@ public class PlayerController : MonoBehaviour
 				knockedBack = true;
 			}
 			if (hurtTimer <= 0 && onGround) {
+				hurtTimer = 0.2f;
 				hurt = false;
 				knockedBack = false;
-				hurtTimer = 0.2f;
 				state = State.standing;
 				combatState = CombatState.idle;
-				Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), false);
+				invincible = true;
 			}
 		} else if (roll) {
 			Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), true);
@@ -233,6 +253,8 @@ public class PlayerController : MonoBehaviour
 						spirit.GetComponent <BoxCollider2D> ().enabled = true;
 						darkness.GetComponent<Darkness> ().OOB = true;
 						state = State.outofbody;
+						rigidBody.velocity = new Vector2 (0, 0);
+						rigidBody.isKinematic = true;
 						ChangedState = true;
 					}
 				}
@@ -390,6 +412,8 @@ public class PlayerController : MonoBehaviour
 						spirit.GetComponent <BoxCollider2D> ().enabled = true;
 						darkness.GetComponent<Darkness> ().OOB = true;
 						state = State.outofbody;
+						rigidBody.isKinematic = true;
+						rigidBody.velocity = new Vector2 (0, 0);
 						ChangedState = true;
 					}
 				}
@@ -504,6 +528,7 @@ public class PlayerController : MonoBehaviour
 			} 
 		//STATE OUT OF BODY
 		else if (state == State.outofbody) {
+				rigidBody.velocity = new Vector2 (0, 0);
 				if (Input.GetKeyDown (oobKey)) {
 					spiritBody.velocity = new Vector2 (0, 0);
 					spirit.transform.localPosition = new Vector2 (0, 0);
@@ -512,6 +537,7 @@ public class PlayerController : MonoBehaviour
 					spirit.GetComponent <BoxCollider2D> ().enabled = false;
 					darkness.GetComponent<Darkness> ().OOB = false;
 					state = State.standing;
+					rigidBody.isKinematic = false;
 					ChangedState = true;
 				}
 				if (Input.GetKey (leftKey)) {

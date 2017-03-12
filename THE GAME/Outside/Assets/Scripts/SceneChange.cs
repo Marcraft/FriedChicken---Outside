@@ -38,6 +38,7 @@ public class SceneChange : MonoBehaviour
 
 	void Awake() {
 		opacity = 3;
+		canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
 		deathOpacity = 0;
 		level.GetComponent<Level> ().levelChoice = currentLevel;
 	}
