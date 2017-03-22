@@ -12,10 +12,19 @@ public class BossFight1 : MonoBehaviour {
 	public bool endCutscene;
 	public float endCutsceneTimer;
 
+	private bool inBattle;
+	public float battleInterval;
+	private float battleTimer;
+	private int battleAction;
+	public float move;
+
 	private float cutsceneBarTarget;
 	private float cutsceneBarScale;
 	private float screenWidth;
 	private float screenHeight;
+	private GameObject player;
+
+
 	// Use this for initialization
 	void Start () {
 		mainCamera = GameObject.FindWithTag ("MainCamera");
@@ -24,7 +33,7 @@ public class BossFight1 : MonoBehaviour {
 		screenHeight = cutsceneBars.GetComponent<RectTransform> ().rect.height;
 		cutsceneBarTarget = 0;
 		cutsceneBarScale = 0;
-		Debug.Log (screenHeight);
+		player = GameObject.FindWithTag ("Player");
 	}
 	
 	// Update is called once per frame
@@ -52,15 +61,38 @@ public class BossFight1 : MonoBehaviour {
 				for (int i = 0; i < GameObjects.Length; i++) {
 					if (GameObjects [i].CompareTag ("PlayerTrap")) {
 						Destroy (GameObjects [i]);
+						inBattle = true;
 					}
 				}
 			}
 		}
+		//////////////////////////////
+		if (inBattle) {
+			Battle ();
+		}
+		//////////////////////////////
 		cutsceneBarScale = cutsceneBarScale + (cutsceneBarTarget - cutsceneBarScale) / 10;
-		Debug.Log (screenHeight);
-		//Debug.Log (cutsceneBarScale);
 		cutsceneBars.GetComponent<RectTransform> ().sizeDelta = new Vector2 (0, -screenHeight*cutsceneBarScale);
-		Debug.Log (cutsceneBars.GetComponent<RectTransform> ().sizeDelta);
+	}
 
+	void Battle() {
+		if (battleTimer < battleInterval) {
+			battleTimer += Time.deltaTime;
+		} else {
+			battleTimer = 0;
+			battleAction = (int)Random.Range (0, 1.99f);
+		}
+		if (battleAction == 0) {
+			if (player.GetComponent<Rigidbody2D> ().position.x < Boss.GetComponent<Rigidbody2D> ().position.x) {
+				Boss.GetComponent<Rigidbody2D> ().transform.localScale = new Vector3 (-1, 1, 1);
+				Boss.GetComponent<Rigidbody2D> ().position = new Vector2 (Boss.GetComponent<Rigidbody2D> ().position.x - move * Time.deltaTime, Boss.GetComponent<Rigidbody2D> ().position.y);
+			} else {
+				Boss.GetComponent<Rigidbody2D> ().transform.localScale = new Vector3 (1, 1, 1);
+				Boss.GetComponent<Rigidbody2D> ().position = new Vector2 (Boss.GetComponent<Rigidbody2D> ().position.x + move * Time.deltaTime, Boss.GetComponent<Rigidbody2D> ().position.y);
+			}
+		}
+		if (battleAction == 1) {
+
+		}
 	}
 }
