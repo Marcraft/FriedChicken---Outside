@@ -57,6 +57,13 @@ public class Arrow : MonoBehaviour {
 		if(other.CompareTag("RaccoonProjectile")){
 			hitEnemy = true;
 		}
+		if(other.CompareTag("PlayerTrap")){
+			hitEnemy = true;
+		}
+		if(other.CompareTag("Boss")){
+			hitEnemy = true;
+			other.GetComponent<Boss> ().hit = true;
+		}
 
 	}
 }

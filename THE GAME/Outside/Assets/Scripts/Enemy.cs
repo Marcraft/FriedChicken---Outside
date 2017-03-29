@@ -2,6 +2,7 @@
 
 public class Enemy : MonoBehaviour
 {
+	public GameObject orb;
 	public bool wolf;
 	public bool raccoon;
 	public bool hurt;
@@ -85,6 +86,7 @@ public class Enemy : MonoBehaviour
 		}
 		if (health <= 0) {
 			Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), false);
+			Instantiate (orb, new Vector3 (transform.position.x , transform.position.y, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
 			Destroy (gameObject);
 		}
 	}

@@ -14,6 +14,10 @@ public class MenuControls : MonoBehaviour {
 	bool gameStarted = false;
 
 	public int map;
+	public bool firstBossKilled;
+	public bool secondBossKilled;
+	public bool thirdBossKilled;
+	public bool haveKey;
 
 	void Awake() {
 		if (control == null) {
@@ -43,8 +47,11 @@ public class MenuControls : MonoBehaviour {
 			if (menuSelection == 3) {
 				menuSelect.transform.localPosition = new Vector2 (0, -66);
 			}
-			if (Input.GetKeyDown ("enter") || Input.GetKeyDown ("return") || Input.GetKeyDown ("f")) {
+			if (Input.GetKeyDown ("enter") || Input.GetKeyDown ("return") || Input.GetKeyDown ("f") || Input.GetKeyDown ("space")) {
 				if (menuSelection == 0) {
+					if (File.Exists (Application.persistentDataPath + "/OutsideSave.dat")) {
+						File.Delete (Application.persistentDataPath + "/OutsideSave.dat");
+					}
 					gameStarted = true;
 					SceneManager.LoadScene ("game");
 				}
@@ -56,7 +63,13 @@ public class MenuControls : MonoBehaviour {
 						file.Close ();
 						/////////////////////
 						map = data.map;
+						firstBossKilled = data.firstBossKilled;
+						secondBossKilled = data.secondBossKilled;
+						thirdBossKilled = data.thirdBossKilled;
+						haveKey = data.haveKey;
 						/////////////////////
+						gameStarted = true;
+						SceneManager.LoadScene ("game");
 					}
 
 				}
@@ -64,7 +77,7 @@ public class MenuControls : MonoBehaviour {
 					
 				}
 				if (menuSelection == 3) {
-
+					Application.Quit();
 				}
 			}
 			if (Input.GetKeyDown ("up")) {
@@ -102,4 +115,8 @@ public class MenuControls : MonoBehaviour {
 [Serializable]
 class SaveFile {
 	public int map;
+	public bool firstBossKilled;
+	public bool secondBossKilled;
+	public bool thirdBossKilled;
+	public bool haveKey;
 }

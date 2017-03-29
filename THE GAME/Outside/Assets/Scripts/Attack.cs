@@ -24,5 +24,9 @@ public class Attack : MonoBehaviour {
 			hitEnemy = true;
 			other.GetComponent<Enemy> ().hurt = true;
 		}
+		if(other.CompareTag("Boss")){
+			hitEnemy = true;
+			other.GetComponent<Boss> ().hit = true;
+		}
 	}
 }

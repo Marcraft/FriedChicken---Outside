@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class SceneChange : MonoBehaviour
 {
@@ -24,6 +27,7 @@ public class SceneChange : MonoBehaviour
 	private bool spawnSet;
 	private bool deadStart;
 
+	private bool spawnFromSave;
 
 	public enum Spawn
 	{
@@ -40,7 +44,12 @@ public class SceneChange : MonoBehaviour
 		opacity = 3;
 		canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
 		deathOpacity = 0;
+		currentLevel = GameObject.FindWithTag ("MenuControls").GetComponent<MenuControls> ().map;
 		level.GetComponent<Level> ().levelChoice = currentLevel;
+
+		if (currentLevel != 101) {
+			spawnFromSave = true;
+		}
 	}
 
 	// Use this for initialization
@@ -56,7 +65,13 @@ public class SceneChange : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{	
-		if (spawnSet == false) {
+		if (spawnSet == false && spawnFromSave && level.GetComponent<Level> ().levelReady && GameObject.FindWithTag ("SaveTree") != null) {
+			player.transform.position = GameObject.FindWithTag ("SaveTree").transform.position;
+			mainCamera.transform.position = new Vector3 (player.transform.position.x, player.transform.position.y, -10);
+			spawnFromSave = false;
+			spawnSet = true;
+		}
+		else if (spawnSet == false) {
 			if (spawn == Spawn.left && level.GetComponent<Level> ().levelReady && leftTrigger.foundSpawnPoint == true) {
 				mainCamera.transform.position = new Vector3 (leftTrigger.spawnPlayer ().x, leftTrigger.spawnPlayer ().y, -10);
 				player.transform.position = leftTrigger.spawnPlayer ();
@@ -115,7 +130,8 @@ public class SceneChange : MonoBehaviour
 				player.transform.position = new Vector2();
 				player.GetComponent<PlayerController> ().changeScene = false;
 				level.GetComponent<Level> ().levelChoice = chooseNextLevel ();
-				level.GetComponent<Level> ().resetLevel ();
+				level.GetComponent<Level> ().clearLevel ();
+				level.GetComponent<Level> ().loadLevel ();
 				Start ();
 				player.GetComponent<PlayerController> ().canClimb = 0;
 				dialogue.GetComponent<LynnDialogue> ().newMap = true;
@@ -139,9 +155,6 @@ public class SceneChange : MonoBehaviour
 			downTrigger.foundSpawnPoint = false;
 			level.GetComponent<Level> ().resetTimer = 5;
 			player.GetComponent<PlayerController> ().changeScene = false;
-			//level.GetComponent<Level> ().levelChoice = chooseNextLevel ();
-			level.GetComponent<Level> ().levelChoice = 101;
-			currentLevel = 101;
 			deadStart = true;
 		}
 		if (player.GetComponent<PlayerController> ().dead) {
@@ -154,7 +167,22 @@ public class SceneChange : MonoBehaviour
 			deathCanvas.GetComponent<CanvasRenderer> ().SetAlpha (deathOpacity);
 			opacity = 1.5f;
 			player.transform.position = new Vector2 ();
-			level.GetComponent<Level> ().resetLevel ();
+			level.GetComponent<Level> ().clearLevel ();
+			if (File.Exists (Application.persistentDataPath + "/OutsideSave.dat")) {
+				BinaryFormatter bf = new BinaryFormatter ();
+				FileStream file = File.Open (Application.persistentDataPath + "/OutsideSave.dat", FileMode.Open);
+				SaveFile data = (SaveFile)bf.Deserialize (file);
+				file.Close ();
+				/////////////////////
+				level.GetComponent<Level> ().levelChoice = data.map;
+				currentLevel = data.map;
+				/////////////////////
+				spawnFromSave = true;
+			} else {
+				level.GetComponent<Level> ().levelChoice = 101;
+				currentLevel = 101;
+			}
+			level.GetComponent<Level> ().loadLevel ();
 			Start ();
 			player.GetComponent<PlayerController> ().dead = false;
 			player.GetComponent<PlayerController> ().health = player.GetComponent<PlayerController> ().maxHealth;
@@ -183,6 +211,16 @@ public class SceneChange : MonoBehaviour
 				nextLevel = 109;
 			if (currentLevel == 109)
 				nextLevel = 110;
+			if (currentLevel == 110)
+				nextLevel = 201;
+			if (currentLevel == 201)
+				nextLevel = 202;
+			if (currentLevel == 203)
+				nextLevel = 204;
+			if (currentLevel == 204)
+				nextLevel = 208;
+			if (currentLevel == 209)
+				nextLevel = 210;
 		} else if (spawn == Spawn.right) {
 			if (currentLevel == 101)
 				nextLevel = 102;
@@ -200,6 +238,16 @@ public class SceneChange : MonoBehaviour
 				nextLevel = 107;
 			if (currentLevel == 110)
 				nextLevel = 109;
+			if (currentLevel == 201)
+				nextLevel = 110;
+			if (currentLevel == 202)
+				nextLevel = 201;
+			if (currentLevel == 204)
+				nextLevel = 203;
+			if (currentLevel == 208)
+				nextLevel = 204;
+			if (currentLevel == 210)
+				nextLevel = 209;
 
 		} else if (spawn == Spawn.up) {
 			if (currentLevel == 101)
@@ -208,6 +256,16 @@ public class SceneChange : MonoBehaviour
 				nextLevel = 108;
 			if (currentLevel == 107)
 				nextLevel = 106;
+			if (currentLevel == 203)
+				nextLevel = 202;
+			if (currentLevel == 204)
+				nextLevel = 205;
+			if (currentLevel == 205)
+				nextLevel = 206;
+			if (currentLevel == 206)
+				nextLevel = 207;
+			if (currentLevel == 209)
+				nextLevel = 208;
 			
 		} else if (spawn == Spawn.down) {
 			if (currentLevel == 101)
@@ -216,6 +274,16 @@ public class SceneChange : MonoBehaviour
 				nextLevel = 107;
 			if (currentLevel == 108)
 				nextLevel = 106;
+			if (currentLevel == 202)
+				nextLevel = 203;
+			if (currentLevel == 205)
+				nextLevel = 204;
+			if (currentLevel == 206)
+				nextLevel = 205;
+			if (currentLevel == 207)
+				nextLevel = 206;
+			if (currentLevel == 208)
+				nextLevel = 209;
 		}
 		currentLevel = nextLevel;
 		return nextLevel;

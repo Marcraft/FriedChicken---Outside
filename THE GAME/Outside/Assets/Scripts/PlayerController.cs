@@ -12,6 +12,10 @@ public class PlayerController : MonoBehaviour
 	public float maxHealth;
 	public bool dead;
 
+	public int elixir;
+	public int maxElixir;
+	public int defaultElixir;
+
 	public float groundControl;
 	public float airControl;
 	public float spiritControl;
@@ -102,6 +106,7 @@ public class PlayerController : MonoBehaviour
 		spiritBody = spirit.GetComponent<Rigidbody2D> ();
 		animator = gameObject.GetComponent<Animator> ();
 		health = maxHealth;
+		elixir = defaultElixir;
 	}
 
 	// Update is called once per frame
@@ -245,7 +250,8 @@ public class PlayerController : MonoBehaviour
 						meleeCombo = MeleeCombo.zero;
 						combatState = CombatState.melee;
 					}
-					if (Input.GetKeyDown (oobKey)) {
+					if (Input.GetKeyDown (oobKey) && elixir > 0) {
+						elixir--;
 						spiritBody.velocity = new Vector2 (0, 0);
 						spirit.transform.localPosition = new Vector2 (0, 0);
 						spirit.transform.localScale = new Vector3 (1, 1, 1);
@@ -254,8 +260,9 @@ public class PlayerController : MonoBehaviour
 						darkness.GetComponent<Darkness> ().OOB = true;
 						state = State.outofbody;
 						rigidBody.velocity = new Vector2 (0, 0);
-						rigidBody.isKinematic = true;
+						//rigidBody.isKinematic = true;
 						ChangedState = true;
+
 					}
 				}
 				if (combatState == CombatState.melee) {
@@ -404,7 +411,8 @@ public class PlayerController : MonoBehaviour
 						ChangedState = true;
 						combatState = CombatState.melee;
 					}
-					if (Input.GetKeyDown (oobKey)) {
+					if (Input.GetKeyDown (oobKey) && elixir > 0) {
+						elixir--;
 						spiritBody.velocity = new Vector2 (0, 0);
 						spirit.transform.localPosition = new Vector2 (0, 0);
 						spirit.transform.localScale = new Vector3 (1, 1, 1);
@@ -412,7 +420,7 @@ public class PlayerController : MonoBehaviour
 						spirit.GetComponent <BoxCollider2D> ().enabled = true;
 						darkness.GetComponent<Darkness> ().OOB = true;
 						state = State.outofbody;
-						rigidBody.isKinematic = true;
+						//rigidBody.isKinematic = true;
 						rigidBody.velocity = new Vector2 (0, 0);
 						ChangedState = true;
 					}
@@ -537,7 +545,7 @@ public class PlayerController : MonoBehaviour
 					spirit.GetComponent <BoxCollider2D> ().enabled = false;
 					darkness.GetComponent<Darkness> ().OOB = false;
 					state = State.standing;
-					rigidBody.isKinematic = false;
+					//rigidBody.isKinematic = false;
 					ChangedState = true;
 				}
 				if (Input.GetKey (leftKey)) {
@@ -640,6 +648,12 @@ public class PlayerController : MonoBehaviour
 					} else {
 						facingRight = false;
 					}
+					hurt = true;
+					health--;
+				}
+			}
+			if (other.gameObject.tag == "Boss") {
+				if (!other.gameObject.GetComponent<Boss> ().dead) {
 					hurt = true;
 					health--;
 				}

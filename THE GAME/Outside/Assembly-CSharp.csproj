@@ -49,6 +49,9 @@
      <Compile Include="Assets\Scripts\Arrow.cs" />
      <Compile Include="Assets\Scripts\Attack.cs" />
      <Compile Include="Assets\Scripts\Background.cs" />
+     <Compile Include="Assets\Scripts\Boss.cs" />
+     <Compile Include="Assets\Scripts\Boss1SpikeDown.cs" />
+     <Compile Include="Assets\Scripts\Boss1SpikeUp.cs" />
      <Compile Include="Assets\Scripts\BossFight1.cs" />
      <Compile Include="Assets\Scripts\Boulder.cs" />
      <Compile Include="Assets\Scripts\CameraScript.cs" />
@@ -68,6 +71,7 @@
      <Compile Include="Assets\Scripts\OnLadder.cs" />
      <Compile Include="Assets\Scripts\OnPlatform.cs" />
      <Compile Include="Assets\Scripts\OneWayPlatform.cs" />
+     <Compile Include="Assets\Scripts\Orb.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\PlayerTrap.cs" />
      <Compile Include="Assets\Scripts\RaccoonProjectile.cs" />
@@ -80,9 +84,6 @@
      <Compile Include="Assets\Scripts\Teleport.cs" />
      <Compile Include="Assets\Scripts\TriggerScript.cs" />
      <Compile Include="Assets\Scripts\spiritTree.cs" />
- <Reference Include="UnityEngine.Advertisements">
- <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll</HintPath>
- </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
@@ -97,9 +98,6 @@
  </Reference>
  <Reference Include="UnityEngine.HoloLens">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
- </Reference>
- <Reference Include="UnityEngine.Purchasing">
- <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityPurchasing/UnityEngine.Purchasing.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.VR">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>

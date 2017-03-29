@@ -150,7 +150,8 @@ public class Level : MonoBehaviour
 				}
 				//savetree
 				else if (compare (levelDesign [i, j], 128, 255, 0)) {
-					Instantiate (savetree, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+					GameObject saveTree = (GameObject)Instantiate (savetree, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+					saveTree.GetComponentInChildren<spiritTree> ().currentLevel = levelChoice;
 				}
 				//boss1
 				else if (compare (levelDesign [i, j], 128, 0, 128)) {
@@ -184,7 +185,7 @@ public class Level : MonoBehaviour
 		return false;
 	}
 
-	public void resetLevel ()
+	public void clearLevel ()
 	{
 		GameObject[] GameObjects = (FindObjectsOfType<GameObject> () as GameObject[]);
 		for (int i = 0; i < GameObjects.Length; i++) {
@@ -196,6 +197,8 @@ public class Level : MonoBehaviour
 				Destroy (GameObjects [i]);
 			}
 		}
+	}
+	public void loadLevel() {
 		if (resetTimer <= 0) {
 			Start ();
 		}
