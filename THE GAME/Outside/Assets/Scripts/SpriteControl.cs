@@ -9,6 +9,12 @@ public class SpriteControl : MonoBehaviour {
 	public Sprite ground4;
 	public Sprite ground5;
 
+	public Sprite groundTwo1;
+	public Sprite groundTwo2;
+	public Sprite groundTwo3;
+	public Sprite groundTwo4;
+	public Sprite groundTwo5;
+
 	// Use this for initialization
 	void Start () {
 		

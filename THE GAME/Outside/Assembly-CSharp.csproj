@@ -49,6 +49,7 @@
      <Compile Include="Assets\Scripts\Arrow.cs" />
      <Compile Include="Assets\Scripts\Attack.cs" />
      <Compile Include="Assets\Scripts\Background.cs" />
+     <Compile Include="Assets\Scripts\BackgroundChange.cs" />
      <Compile Include="Assets\Scripts\Boss.cs" />
      <Compile Include="Assets\Scripts\Boss1SpikeDown.cs" />
      <Compile Include="Assets\Scripts\Boss1SpikeUp.cs" />

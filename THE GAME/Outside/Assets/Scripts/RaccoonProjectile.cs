@@ -30,9 +30,6 @@ public class RaccoonProjectile : MonoBehaviour {
 		if (opacity <= 0) {
 			Destroy (gameObject);
 		}
-		if (hitPlayer && !hitOther) {
-			Destroy (gameObject);
-		}
 		if (hitOther) {
 			opacity -= Time.deltaTime;
 			GetComponent<SpriteRenderer> ().color = new Color (1f, 1f, 1f, opacity);
@@ -45,7 +42,6 @@ public class RaccoonProjectile : MonoBehaviour {
 			rigidBody.velocity = new Vector2 (0, 0);
 		}
 		if(other.CompareTag("Player")){
-			hitPlayer = true;
 			if (other.GetComponent<Rigidbody2D>().position.x > rigidBody.position.x) {
 				other.GetComponent<PlayerController>().facingRight = false;
 			} else {
@@ -53,9 +49,10 @@ public class RaccoonProjectile : MonoBehaviour {
 			}
 			other.GetComponent <PlayerController>().health--;
 			other.GetComponent <PlayerController> ().hurt = true;
+			Destroy (this.gameObject);
 		}
 		if(other.CompareTag("Arrow") || other.CompareTag("Attack")){
-			hitPlayer = true;
+			Destroy (this.gameObject);
 		}
 
 	}

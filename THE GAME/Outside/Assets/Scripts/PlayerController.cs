@@ -536,7 +536,7 @@ public class PlayerController : MonoBehaviour
 			} 
 		//STATE OUT OF BODY
 		else if (state == State.outofbody) {
-				rigidBody.velocity = new Vector2 (0, 0);
+				//rigidBody.velocity = new Vector2 (0, 0);
 				if (Input.GetKeyDown (oobKey)) {
 					spiritBody.velocity = new Vector2 (0, 0);
 					spirit.transform.localPosition = new Vector2 (0, 0);
