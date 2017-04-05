@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
 	public float maxHealth;
 	public bool dead;
 
+	public bool hasKey;
+
 	public int elixir;
 	public int maxElixir;
 	public int defaultElixir;
@@ -65,6 +67,7 @@ public class PlayerController : MonoBehaviour
 	public bool roll;
 	public bool leaped;
 	private float rollTimer;
+	bool hurtSound;
 
 	public enum State
 	{
@@ -151,6 +154,10 @@ public class PlayerController : MonoBehaviour
 			Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), false);
 		}
 		else if (hurt) {
+			if (!hurtSound) {
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("hurt");
+				hurtSound = true;
+			}
 			Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), true);
 			hurtTimer -= Time.deltaTime;
 			if (health < 0) {
@@ -178,6 +185,7 @@ public class PlayerController : MonoBehaviour
 				knockedBack = true;
 			}
 			if (hurtTimer <= 0 && onGround) {
+				hurtSound = false;
 				hurtTimer = 0.2f;
 				hurt = false;
 				knockedBack = false;
@@ -189,9 +197,11 @@ public class PlayerController : MonoBehaviour
 			Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("Enemy"), true);
 			rollTimer -= Time.deltaTime;
 			if (facingRight && !leaped) {
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("roll");
 				rigidBody.velocity = new Vector2 (rollLeapStrength, rigidBody.velocity.y);
 				leaped = true;
 			} else if (!facingRight && !leaped) {
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("roll");
 				rigidBody.velocity = new Vector2 (-rollLeapStrength, rigidBody.velocity.y);
 				leaped = true;
 			}
@@ -251,6 +261,7 @@ public class PlayerController : MonoBehaviour
 						combatState = CombatState.melee;
 					}
 					if (Input.GetKeyDown (oobKey) && elixir > 0) {
+						GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("oob3");
 						elixir--;
 						spiritBody.velocity = new Vector2 (0, 0);
 						spirit.transform.localPosition = new Vector2 (0, 0);
@@ -267,6 +278,7 @@ public class PlayerController : MonoBehaviour
 				}
 				if (combatState == CombatState.melee) {
 					if (meleeCombo == MeleeCombo.zero) {
+						GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("swing1");
 						comboTimer = combo1;
 						meleeCombo = MeleeCombo.one;
 						if (facingRight)
@@ -280,6 +292,7 @@ public class PlayerController : MonoBehaviour
 								meleeCombo = MeleeCombo.zero;
 								combatState = CombatState.idle;
 							} else if (nextCombo) {
+								GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("swing2");
 								if (Input.GetKey (leftKey)) {
 									transform.localScale = new Vector3 (-1, 1, 1);
 									facingRight = false;
@@ -312,6 +325,7 @@ public class PlayerController : MonoBehaviour
 								meleeCombo = MeleeCombo.zero;
 								combatState = CombatState.idle;
 							} else if (nextCombo) {
+								GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("swing3");
 								if (Input.GetKey (leftKey)) {
 									transform.localScale = new Vector3 (-1, 1, 1);
 									facingRight = false;
@@ -363,6 +377,7 @@ public class PlayerController : MonoBehaviour
 						ChangedState = true;
 					}
 					if (Input.GetKeyUp (rangedKey)) {
+						GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("bowShoot");
 						if (facingRight) {
 							GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x + 0.5f, transform.position.y - 0.02f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
 							currentArrow.GetComponent<Arrow> ().goingRight = true;
@@ -412,6 +427,7 @@ public class PlayerController : MonoBehaviour
 						combatState = CombatState.melee;
 					}
 					if (Input.GetKeyDown (oobKey) && elixir > 0) {
+						GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("oob3");
 						elixir--;
 						spiritBody.velocity = new Vector2 (0, 0);
 						spirit.transform.localPosition = new Vector2 (0, 0);
@@ -435,6 +451,7 @@ public class PlayerController : MonoBehaviour
 						facingRight = true;
 					}
 					if (Input.GetKeyUp (rangedKey)) {
+						GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("bowShoot");
 						if (facingRight) {
 							GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x + 0.5f, transform.position.y - 0.25f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
 							currentArrow.GetComponent<Arrow> ().goingRight = true;
@@ -455,6 +472,7 @@ public class PlayerController : MonoBehaviour
 					if (comboTimer <= 0) {
 						state = State.standing;
 						ChangedState = true;
+						GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("drop");
 					}
 				}
 				if (Input.GetKeyUp (jumpKey)) {
@@ -488,6 +506,7 @@ public class PlayerController : MonoBehaviour
 				}
 				if (combatState == CombatState.melee) {
 					if (meleeCombo == MeleeCombo.zero) {
+						GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("swing3");
 						comboTimer = comboAir;
 						meleeCombo = MeleeCombo.air;
 					} else if (meleeCombo == MeleeCombo.air) {
@@ -507,6 +526,7 @@ public class PlayerController : MonoBehaviour
 						facingRight = true;
 					}
 					if (Input.GetKeyUp (rangedKey)) {
+						GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("bowShoot");
 						if (facingRight) {
 							GameObject currentArrow = (GameObject)Instantiate (arrow, new Vector3 (transform.position.x + 0.5f, transform.position.y + 0.09f, transform.position.z), Quaternion.Euler (new Vector3 (0, 0, 0)));
 							currentArrow.GetComponent<Arrow> ().goingRight = true;
@@ -547,6 +567,7 @@ public class PlayerController : MonoBehaviour
 					state = State.standing;
 					//rigidBody.isKinematic = false;
 					ChangedState = true;
+					GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("oob2");
 				}
 				if (Input.GetKey (leftKey)) {
 					if (facingRight)

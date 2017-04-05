@@ -53,6 +53,7 @@ public class Spiritouch : MonoBehaviour {
 	void OnTriggerStay2D(Collider2D other) {
 		if (player.state == PlayerController.State.outofbody) {
 			if (other.gameObject.CompareTag ("PlayerSpirit")) {
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("weakGround");
 				Destroy (transform.parent.gameObject);
 			}
 		}

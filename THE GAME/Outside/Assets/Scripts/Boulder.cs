@@ -12,6 +12,7 @@ public class Boulder : MonoBehaviour {
 	}
 	void OnCollisionEnter2D(Collision2D other) {
 		if (other.gameObject.tag == "Slab") {
+			GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("boulderDrop");
 			Destroy (this.gameObject);
 		}
 	}
@@ -21,6 +22,7 @@ public class Boulder : MonoBehaviour {
 			other.GetComponent <PlayerController> ().hurt = true;
 		}
 		if(other.CompareTag("Enemy")){
+			GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("boulderDrop");
 			other.GetComponent <Enemy>().health = -1;
 			other.GetComponent <Enemy> ().hurt = true;
 		}

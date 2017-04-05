@@ -12,7 +12,7 @@ public class Grass : MonoBehaviour {
 		level = GameObject.FindWithTag ("Level").GetComponent<Level> ();
 		if (level.levelChoice < 200) {
 			GetComponent<SpriteRenderer>().sprite = grass;
-		} else if (level.levelChoice < 300) {
+		} else if (level.levelChoice < 210) {
 			GetComponent<SpriteRenderer>().sprite = rocks;
 		} else {
 			GetComponent<SpriteRenderer>().sprite = thickGrass;

@@ -46,8 +46,5 @@ public class SpiritBoulder : MonoBehaviour {
 			}
 			GetComponent<SpriteRenderer> ().color = new Color (1f, 1f, 1f, opacity);
 		}
-
-
-
 	}
 }

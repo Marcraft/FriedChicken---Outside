@@ -19,6 +19,8 @@ public class Elixir : MonoBehaviour {
 	public Sprite flask9;
 	public Sprite flask10;
 
+	public Text text;
+
 	Image image;
 
 
@@ -29,6 +31,7 @@ public class Elixir : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		text.text = player.GetComponent<PlayerController> ().elixir.ToString();
 		if (player.GetComponent<PlayerController> ().elixir == 0) {
 			image.sprite = flask0;
 		}

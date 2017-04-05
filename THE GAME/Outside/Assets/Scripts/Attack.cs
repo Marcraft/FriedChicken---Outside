@@ -12,19 +12,19 @@ public class Attack : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (playerController.combatState == PlayerController.CombatState.melee) {
-			GetComponent<BoxCollider2D> ().enabled = true;
-		} else {
+		if (playerController.combatState != PlayerController.CombatState.melee) {
 			GetComponent<BoxCollider2D> ().enabled = false;
 		}
 		
 	}
 	void OnTriggerEnter2D(Collider2D other) {
 		if(other.CompareTag("Enemy")){
+			GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("clubHit");
 			hitEnemy = true;
 			other.GetComponent<Enemy> ().hurt = true;
 		}
 		if(other.CompareTag("Boss")){
+			GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("clubHit");
 			hitEnemy = true;
 			other.GetComponent<Boss> ().hit = true;
 		}

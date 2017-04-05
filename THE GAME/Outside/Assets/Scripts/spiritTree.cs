@@ -57,6 +57,12 @@ public class spiritTree : MonoBehaviour {
 		}
 	}
 	void OnTriggerStay2D(Collider2D other) {
+		if(other.gameObject.CompareTag("Player")) {
+			player.health = player.maxHealth;
+			if (player.elixir <= player.defaultElixir) {
+				player.elixir = player.defaultElixir;
+			}
+		}
 		if (player.state == PlayerController.State.outofbody) {
 			if (other.gameObject.CompareTag ("PlayerSpirit")) {
 				if (saveDelay <= 0) {
@@ -72,6 +78,7 @@ public class spiritTree : MonoBehaviour {
 						bool firstBossKilled = data.firstBossKilled;
 						bool secondBossKilled = data.secondBossKilled;
 						bool thirdBossKilled = data.thirdBossKilled;
+						bool haveKey = data.haveKey;
 						/////////////////////
 						file = File.Create (Application.persistentDataPath + "/OutsideSave.dat");
 						data = new SaveFile ();
@@ -79,19 +86,18 @@ public class spiritTree : MonoBehaviour {
 						data.firstBossKilled = firstBossKilled;
 						data.secondBossKilled = secondBossKilled;
 						data.thirdBossKilled = thirdBossKilled;
+						data.haveKey = GameObject.FindWithTag ("MenuControls").GetComponent<MenuControls> ().haveKey;
 						bf.Serialize (file, data);
 						file.Close ();
 					} else {
 						file = File.Create (Application.persistentDataPath + "/OutsideSave.dat");
 						data = new SaveFile ();
 						data.map = currentLevel;
+						data.haveKey = GameObject.FindWithTag ("MenuControls").GetComponent<MenuControls> ().haveKey;
 						bf.Serialize (file, data);
 						file.Close ();
 					}
-					player.health = player.maxHealth;
-					if (player.elixir <= player.defaultElixir) {
-						player.elixir = player.defaultElixir;
-					}
+					GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("save");
 					saveDelay = 5;
 				}
 			}

@@ -13,6 +13,7 @@ public class SceneChange : MonoBehaviour
 	public GameObject deathCanvas;
 	public GameObject level;
 	public GameObject dialogue;
+	GameObject menuControls;
 
 	public TriggerScript leftTrigger;
 	public TriggerScript rightTrigger;
@@ -26,6 +27,7 @@ public class SceneChange : MonoBehaviour
 	private bool changeMap;
 	private bool spawnSet;
 	private bool deadStart;
+	private bool deathSound;
 
 	private bool spawnFromSave;
 
@@ -55,11 +57,13 @@ public class SceneChange : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+		menuControls = GameObject.FindWithTag ("MenuControls");
 		changeMap = false;
 		canvas.GetComponent<CanvasRenderer> ().SetAlpha (opacity);
 		deathCanvas.GetComponent<CanvasRenderer> ().SetAlpha (deathOpacity);
 		dialogue.GetComponent<LynnDialogue> ().newMap = true;
 		dialogue.GetComponent<LynnDialogue> ().currentMap = currentLevel;
+		deathSound = false;
 	}
 
 	// Update is called once per frame
@@ -158,6 +162,12 @@ public class SceneChange : MonoBehaviour
 			deadStart = true;
 		}
 		if (player.GetComponent<PlayerController> ().dead) {
+			if (!deathSound) {
+				GameObject.FindWithTag ("gamebgm").GetComponent<AudioSource>().Stop();
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().StopAll();
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("death");
+				deathSound = true;
+			}
 			level.GetComponent<Level> ().resetTimer -= Time.deltaTime;
 			deathOpacity += Time.deltaTime;
 			deathCanvas.GetComponent<CanvasRenderer> ().SetAlpha (deathOpacity);
@@ -176,6 +186,11 @@ public class SceneChange : MonoBehaviour
 				/////////////////////
 				level.GetComponent<Level> ().levelChoice = data.map;
 				currentLevel = data.map;
+				menuControls.GetComponent<MenuControls> ().firstBossKilled = data.firstBossKilled;
+				menuControls.GetComponent<MenuControls> ().secondBossKilled = data.secondBossKilled;
+				menuControls.GetComponent<MenuControls> ().thirdBossKilled = data.thirdBossKilled;
+				menuControls.GetComponent<MenuControls> ().haveKey = data.haveKey;
+				player.gameObject.GetComponent<PlayerController> ().hasKey =data.haveKey;
 				/////////////////////
 				spawnFromSave = true;
 			} else {
@@ -189,6 +204,7 @@ public class SceneChange : MonoBehaviour
 			player.GetComponent<PlayerController> ().canClimb = 0;
 			dialogue.GetComponent<LynnDialogue> ().newMap = true;
 			dialogue.GetComponent<LynnDialogue> ().currentMap = currentLevel;
+			GameObject.FindWithTag ("gamebgm").GetComponent<GameBGM> ().Start ();
 			deadStart = false;
 		}
 	}
@@ -211,8 +227,14 @@ public class SceneChange : MonoBehaviour
 				nextLevel = 109;
 			if (currentLevel == 109)
 				nextLevel = 110;
-			if (currentLevel == 110)
+			if (currentLevel == 110) {
+				GameObject.FindWithTag ("gamebgm").GetComponent<GameBGM> ().changeSong (3);
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Stop ("wind");
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Stop ("sea");
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("cave");
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("stream");
 				nextLevel = 201;
+			}
 			if (currentLevel == 201)
 				nextLevel = 202;
 			if (currentLevel == 203)
@@ -238,8 +260,14 @@ public class SceneChange : MonoBehaviour
 				nextLevel = 107;
 			if (currentLevel == 110)
 				nextLevel = 109;
-			if (currentLevel == 201)
+			if (currentLevel == 201) {
+				GameObject.FindWithTag ("gamebgm").GetComponent<GameBGM> ().changeSong (1);
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Stop ("cave");
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Stop ("stream");
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("wind");
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("sea");
 				nextLevel = 110;
+			}
 			if (currentLevel == 202)
 				nextLevel = 201;
 			if (currentLevel == 204)

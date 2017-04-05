@@ -11,7 +11,7 @@ public class MenuControls : MonoBehaviour {
 
 	public GameObject menuSelect;
 	public int menuSelection;
-	bool gameStarted = false;
+	public bool gameStarted = false;
 
 	public int map;
 	public bool firstBossKilled;
@@ -30,6 +30,7 @@ public class MenuControls : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		menuSelection = 0;
+		Cursor.visible = false;
 	}
 	
 	// Update is called once per frame
@@ -53,7 +54,7 @@ public class MenuControls : MonoBehaviour {
 						File.Delete (Application.persistentDataPath + "/OutsideSave.dat");
 					}
 					gameStarted = true;
-					SceneManager.LoadScene ("game");
+					SceneManager.LoadScene ("opening");
 				}
 				if (menuSelection == 1) {
 					if (File.Exists (Application.persistentDataPath + "/OutsideSave.dat")) {
@@ -74,7 +75,9 @@ public class MenuControls : MonoBehaviour {
 
 				}
 				if (menuSelection == 2) {
-					
+					map = 210;
+					gameStarted = true;
+					SceneManager.LoadScene ("game");
 				}
 				if (menuSelection == 3) {
 					Application.Quit();

@@ -76,13 +76,16 @@ public class BossFight1 : MonoBehaviour {
 			GameObject[] GameObjects = (FindObjectsOfType<GameObject> () as GameObject[]);
 			for (int i = 0; i < GameObjects.Length; i++) {
 				if (GameObjects [i].CompareTag ("SpiritTouch")) {
+					GameObject.FindWithTag ("gamebgm").GetComponent<GameBGM> ().changeSong (2);
 					Destroy (GameObjects [i].transform.parent.gameObject);
 				}
 			}
 		}
 		if (startCutscene) {
 			startCutsceneTimer -= Time.deltaTime;
+			battleAction = -1;
 			if (startCutsceneTimer <= 0) {
+				battleAction = 0;
 				cutsceneBarTarget = 0;
 				mainCamera.GetComponent<CameraScript>().cutscene = false;
 				playerTrap.gameObject.GetComponent<BoxCollider2D> ().enabled = false;
@@ -94,6 +97,7 @@ public class BossFight1 : MonoBehaviour {
 						inBattle = true;
 					}
 				}
+				startCutscene = false;
 			}
 		}
 		//////////////////////////////
@@ -105,41 +109,6 @@ public class BossFight1 : MonoBehaviour {
 			endCutsceneTimer -= Time.deltaTime;
 			if (endCutsceneTimer <= 0) {
 				clearWay = true;
-				////////////////////////////////////
-				BinaryFormatter bf = new BinaryFormatter ();
-				FileStream file;
-				SaveFile data;
-				if (File.Exists (Application.persistentDataPath + "/OutsideSave.dat")) {
-					file = File.Open (Application.persistentDataPath + "/OutsideSave.dat", FileMode.Open);
-					data = (SaveFile)bf.Deserialize (file);
-					file.Close ();
-					/////////////////////
-					int map = data.map;
-					bool firstBossKilled = data.firstBossKilled;
-					bool secondBossKilled = data.secondBossKilled;
-					bool thirdBossKilled = data.thirdBossKilled;
-					/////////////////////
-					file = File.Create (Application.persistentDataPath + "/OutsideSave.dat");
-					data = new SaveFile ();
-					data.map = level.GetComponent<Level>().levelChoice;
-					data.firstBossKilled = firstBossKilled;
-					data.secondBossKilled = secondBossKilled;
-					data.thirdBossKilled = thirdBossKilled;
-					bf.Serialize (file, data);
-					file.Close ();
-				} else {
-					file = File.Create (Application.persistentDataPath + "/OutsideSave.dat");
-					data = new SaveFile ();
-					data.map = level.GetComponent<Level>().levelChoice;
-					data.firstBossKilled = true;
-					bf.Serialize (file, data);
-					file.Close ();
-				}
-				player.GetComponent<PlayerController>().health = player.GetComponent<PlayerController>().maxHealth;
-				if (player.GetComponent<PlayerController>().elixir <= player.GetComponent<PlayerController>().defaultElixir) {
-					player.GetComponent<PlayerController>().elixir = player.GetComponent<PlayerController>().defaultElixir;
-				}
-				////////////////////////////////////
 			}
 		}
 		cutsceneBarScale = cutsceneBarScale + (cutsceneBarTarget - cutsceneBarScale) / 10;
@@ -156,6 +125,7 @@ public class BossFight1 : MonoBehaviour {
 					battleAction = 1;
 				} else if (battleAction == 1) {
 					battleAction = 2;
+					GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("bambiAttack");
 				} else if (battleAction == 2) {
 					battleAction = 0;
 				}
@@ -192,9 +162,44 @@ public class BossFight1 : MonoBehaviour {
 				attackTimer = 0;
 			}
 		} else {
+			GameObject.FindWithTag ("gamebgm").GetComponent<GameBGM> ().changeSong (1);
 			battleAction = 3;
 			boss.GetComponent<Rigidbody2D> ().isKinematic = false;
 			endCutscene = true;
+			inBattle = false;
+			////////////////////////////////////
+			BinaryFormatter bf = new BinaryFormatter ();
+			FileStream file;
+			SaveFile data;
+			if (File.Exists (Application.persistentDataPath + "/OutsideSave.dat")) {
+				file = File.Open (Application.persistentDataPath + "/OutsideSave.dat", FileMode.Open);
+				data = (SaveFile)bf.Deserialize (file);
+				file.Close ();
+				/////////////////////
+				int map = data.map;
+				bool firstBossKilled = data.firstBossKilled;
+				bool secondBossKilled = data.secondBossKilled;
+				bool thirdBossKilled = data.thirdBossKilled;
+				/////////////////////
+				file = File.Create (Application.persistentDataPath + "/OutsideSave.dat");
+				data = new SaveFile ();
+				data.map = level.GetComponent<Level>().levelChoice;
+				data.firstBossKilled = true;
+				data.secondBossKilled = secondBossKilled;
+				data.thirdBossKilled = thirdBossKilled;
+				data.haveKey = GameObject.FindWithTag ("MenuControls").GetComponent<MenuControls> ().haveKey;
+				bf.Serialize (file, data);
+				file.Close ();
+			} else {
+				file = File.Create (Application.persistentDataPath + "/OutsideSave.dat");
+				data = new SaveFile ();
+				data.map = level.GetComponent<Level>().levelChoice;
+				data.haveKey = GameObject.FindWithTag ("MenuControls").GetComponent<MenuControls> ().haveKey;
+				data.firstBossKilled = true;
+				bf.Serialize (file, data);
+				file.Close ();
+			}
+			////////////////////////////////////
 		}
 	}
 	void OnTriggerStay2D(Collider2D other) {

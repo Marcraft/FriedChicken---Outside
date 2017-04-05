@@ -27,11 +27,15 @@ public class Level : MonoBehaviour
 	public GameObject hiddenplatform;
 	public GameObject tallstone;
 	public GameObject savetree;
+	public GameObject chest;
+	public GameObject door;
 
 	public GameObject raccoon;
 	public GameObject wolf;
+	public GameObject willowisp;
 
 	public GameObject boss1;
+	public GameObject boss2;
 
 	public bool levelReady;
 	// Use this for initialization
@@ -49,7 +53,11 @@ public class Level : MonoBehaviour
 					//ground
 					if (compare (levelDesign [i, j], 0, 0, 0)) {
 						GameObject currentTile = (GameObject)Instantiate (ground, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
-						currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground1;
+						if (levelChoice < 200) {
+							currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground1;
+						} else {
+							currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().groundTwo1;
+						}
 					}
 					//teleport
 					else if (compare (levelDesign [i, j], 0, 255, 255)) {
@@ -57,7 +65,7 @@ public class Level : MonoBehaviour
 					}
 				} 
 				//INSIDE
-				else if(compare (levelDesign [i, j], 0, 0, 0) || compare (levelDesign [i, j], 0, 128, 128) || compare (levelDesign [i, j], 0, 0, 255)) {
+				else if (compare (levelDesign [i, j], 0, 0, 0) || compare (levelDesign [i, j], 0, 128, 128) || compare (levelDesign [i, j], 0, 0, 255)) {
 					//ground
 					GameObject currentTile;
 					if (compare (levelDesign [i, j], 0, 0, 0)) {
@@ -69,7 +77,7 @@ public class Level : MonoBehaviour
 						if (!compare (levelDesign [i, j - 1], 0, 0, 0) && !compare (levelDesign [i, j - 1], 0, 128, 128) && !compare (levelDesign [i, j - 1], 0, 0, 255)) {
 							Instantiate (grass, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 180)));
 						}
-						if (!compare (levelDesign [i + 1, j], 0, 0, 0) && !compare (levelDesign [i + 1, j], 0, 128, 128) && !compare (levelDesign [i + 1, j ], 0, 0, 255)) {
+						if (!compare (levelDesign [i + 1, j], 0, 0, 0) && !compare (levelDesign [i + 1, j], 0, 128, 128) && !compare (levelDesign [i + 1, j], 0, 0, 255)) {
 							Instantiate (grass, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 270)));
 						}
 						if (!compare (levelDesign [i - 1, j], 0, 0, 0) && !compare (levelDesign [i - 1, j], 0, 128, 128) && !compare (levelDesign [i - 1, j], 0, 0, 255)) {
@@ -77,7 +85,7 @@ public class Level : MonoBehaviour
 						}
 					}
 					//weakground
-					else if(!compare (levelDesign [i, j], 0, 0, 255)) {
+					else if (!compare (levelDesign [i, j], 0, 0, 255)) {
 						currentTile = (GameObject)Instantiate (weakground, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 
 					}
@@ -99,7 +107,7 @@ public class Level : MonoBehaviour
 						} else {
 							currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().ground1;
 						}
-					}else if(levelChoice < 300) {
+					} else if (levelChoice < 300) {
 						int random = Random.Range (0, 20);
 						if (random == 0) {
 							currentTile.GetComponent<SpriteRenderer> ().sprite = currentTile.GetComponent<SpriteControl> ().groundTwo2;
@@ -161,7 +169,11 @@ public class Level : MonoBehaviour
 				else if (compare (levelDesign [i, j], 255, 128, 128)) {
 					Instantiate (wolf, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 				}
-				//wolf
+				//willowisp
+				else if (compare (levelDesign [i, j], 255, 0, 128)) {
+					Instantiate (willowisp, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+				}
+				//lynn
 				else if (compare (levelDesign [i, j], 255, 128, 255)) {
 					Instantiate (lynn, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 				}
@@ -170,9 +182,21 @@ public class Level : MonoBehaviour
 					GameObject saveTree = (GameObject)Instantiate (savetree, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 					saveTree.GetComponentInChildren<spiritTree> ().currentLevel = levelChoice;
 				}
+				//chest
+				else if (compare (levelDesign [i, j], 255, 255, 0)) {
+					Instantiate (chest, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2) - 0.25f, -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+				}
+				//door
+				else if (compare (levelDesign [i, j], 128, 0, 0)) {
+					Instantiate (door, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+				}
 				//boss1
 				else if (compare (levelDesign [i, j], 128, 0, 128)) {
 					Instantiate (boss1, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
+				}
+				//boss2
+				else if (compare (levelDesign [i, j], 128, 0, 255)) {
+					Instantiate (boss2, new Vector3 (gridScale * (i - levelWidth / 2), gridScale * (j - levelHeight / 2), -1), Quaternion.Euler (new Vector3 (0, 0, 0)));
 				}
 			}
 		}

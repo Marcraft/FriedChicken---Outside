@@ -23,7 +23,7 @@ public class LynnDialogue : MonoBehaviour {
 		opacity = 0;
 		delay = 1;
 		timer = delay;
-		showDelay = 5;
+		showDelay = 7;
 		showTimer = showDelay;
 		showDialogue = false;
 		sizeX = 0;
@@ -53,59 +53,67 @@ public class LynnDialogue : MonoBehaviour {
 				newMap = false;
 			}
 		}
-		if (showDialogue) {
-			if (opacity < 1) {
-				opacity += Time.deltaTime;
-			}
-			if (sizeX < Screen.width / 2) {
-				sizeX += Time.deltaTime * 600;
-			}
-			if (opacity >= 1 && sizeX >= Screen.width / 2) {
-				text.text = retrieveDialogue(currentMap);
-			}
-			showTimer -= Time.deltaTime;
-			if (showTimer < 0) {
-				text.text = "";
-				showDialogue = false;
-				showTimer = showDelay;
-			}
-		} else {
-			if (opacity >= 0) {
-				opacity -= Time.deltaTime;
-			}
-			if (sizeX >= 0) {
-				sizeX -= Time.deltaTime * 600;
+		if (currentMap < 202) {
+			if (showDialogue) {
+				if (opacity < 1) {
+					opacity += Time.deltaTime;
+				}
+				if (sizeX < Screen.width / 2) {
+					sizeX += Time.deltaTime * 600;
+				}
+				if (opacity >= 1 && sizeX >= Screen.width / 2) {
+					text.text = retrieveDialogue (currentMap);
+				}
+				showTimer -= Time.deltaTime;
+				if (showTimer < 0) {
+					text.text = "";
+					showDialogue = false;
+					showTimer = showDelay;
+				}
+			} else {
+				if (opacity >= 0) {
+					opacity -= Time.deltaTime;
+				}
+				if (sizeX >= 0) {
+					sizeX -= Time.deltaTime * 600;
+				}
 			}
 		}
 
 	}
 	string retrieveDialogue(int i) {
 		if (i == 101) {
-			return "Thank you for doing the favor for us, we owe you a huge debt.";
+			return "I'm guessing the harvesters destroyed one of our sacred trees, and caused all this. There's an open area roughly a mile from here. Take this seed and plant it there, then the curse should be cleared. Good Luck!";
 		}
 		if (i == 102) {
-			return "The outbreak caused those wild animals to become aggressive, watch yourselves out there.";
+			return "Remember the elixir I gave you? Drink a sip and your soul can see the things that your eyes can't. You don't have that much so use it wisely.";
 		}
 		if (i == 103) {
-			return "Remember the elixir I gave you? Your soul can see the things that your eyes can't, use it wisely.";
+			return "The vine tree will heal you and give you some elixir. Touching the tree with your spirit will also save your progress.";
 		}
 		if (i == 104) {
-			return "Please do be careful, the forest can be a dangerous place.";
+			return "Defeating the wild animals will allow you to free their soul which will give you some elixir and health in return.";
 		}
 		if (i == 105) {
-			return "Careful, the trap with the spikes were used to keep invaders from entering the forest, you don't want to fall in there.";
+			return "If you don't want to fight the wild animals, you can dodge roll past them. Or use your bow and arrow to shoot them from safety.";
 		}
 		if (i == 106) {
-			return "The elixir's energy is not endless, try to explore around for more energy sources.";
+			return "I just remembered, there are giant gate doors that will prevent you from proceeding further later on. I believe the key can be found in a chest down below.";
 		}
 		if (i == 107) {
-			return "If you accidentally block your way, come back again later, the environment will fix itself.";
+			return "If you think you are stuck, leave and come back again. The curse seems to reset the environment.";
 		}
 		if (i == 108) {
 			return "Remember, you can see things that you normally can't when you are in soul form.";
 		}
 		if (i == 109) {
-			return "There is a corrupted deer hanging around in this place, it is very dangerous, ready yourself.";
+			return "There is a corrupted deer hanging around nearby, it is very dangerous, be careful.";
+		}
+		if (i == 110) {
+			return "There it is! looks like you have to defeat it to go further.";
+		}
+		if (i == 201) {
+			return "...This is as far...s the radio....signal goes....loo...like yo....re on your own fr..m here on out...";
 		}
 		return "error, did not find dialogue";
 	}

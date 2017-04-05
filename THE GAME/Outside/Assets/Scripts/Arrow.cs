@@ -9,6 +9,7 @@ public class Arrow : MonoBehaviour {
 	private bool hitEnemy;
 	private bool hitOther;
 	private Rigidbody2D rigidBody;
+	bool arrowHit;
 	// Use this for initialization
 	void Start () {
 		rigidBody = gameObject.GetComponent<Rigidbody2D> ();
@@ -47,20 +48,36 @@ public class Arrow : MonoBehaviour {
 	}
 	void OnTriggerEnter2D(Collider2D other) {
 		if(other.CompareTag("Ground") || other.CompareTag("Platform") || other.CompareTag("Boulder")){
+			if (!arrowHit) {
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("bowHit");
+				arrowHit = true;
+			}
 			hitOther = true;
 			rigidBody.velocity = new Vector2 (0, 0);
 		}
 		if(other.CompareTag("Enemy")){
+			if (!arrowHit) {
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("bowHit");
+				arrowHit = true;
+			}
 			hitEnemy = true;
 			other.GetComponent<Enemy> ().hurt = true;
 		}
 		if(other.CompareTag("RaccoonProjectile")){
+			if (!arrowHit) {
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("bowHit");
+				arrowHit = true;
+			}
 			hitEnemy = true;
 		}
 		if(other.CompareTag("PlayerTrap")){
 			hitEnemy = true;
 		}
 		if(other.CompareTag("Boss")){
+			if (!arrowHit) {
+				GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("bowHit");
+				arrowHit = true;
+			}
 			hitEnemy = true;
 			other.GetComponent<Boss> ().hit = true;
 		}

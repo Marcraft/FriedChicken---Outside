@@ -22,6 +22,7 @@ public class Orb : MonoBehaviour {
 	}
 	void OnTriggerEnter2D(Collider2D other) {
 		if(other.CompareTag("Player")){
+			GameObject.FindWithTag ("SoundBoard").GetComponent<SoundBoard> ().Play ("elixir");
 			if (other.GetComponent<PlayerController> ().elixir < other.GetComponent<PlayerController> ().maxElixir) {
 				other.GetComponent<PlayerController> ().elixir += 1;
 			}

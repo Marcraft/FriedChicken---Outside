@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class OOB : MonoBehaviour
 {
-
+	public Sprite still;
+	public Sprite floating;
 	// Use this for initialization
 	void Start ()
 	{
@@ -15,7 +16,11 @@ public class OOB : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		
+		if (Mathf.Abs (GetComponent<Rigidbody2D> ().velocity.x) > 0.5) {
+			GetComponent<SpriteRenderer> ().sprite = floating;
+		} else {
+			GetComponent<SpriteRenderer> ().sprite = still;
+		}
 	}
 
 }
