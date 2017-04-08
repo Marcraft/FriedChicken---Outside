@@ -75,7 +75,7 @@ public class MenuControls : MonoBehaviour {
 
 				}
 				if (menuSelection == 2) {
-					map = 210;
+					map = 209;
 					gameStarted = true;
 					SceneManager.LoadScene ("game");
 				}
